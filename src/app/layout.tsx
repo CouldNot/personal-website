@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import localFont from "next/font/local"
+import styles from "./layout.module.css"
 
 const caslon = localFont({
   src: [
@@ -56,7 +57,11 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className={`${caslon.variable} ${grotesk.variable}`}>
-      <body>{children}</body>
+      <body>
+        <div className={styles.container}>
+          {children}
+        </div>
+      </body>
     </html>
   )
 }

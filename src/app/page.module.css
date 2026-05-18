@@ -1,0 +1,16 @@
+.layout {
+  display: grid;
+  grid-template-columns: 200px 1fr;
+  gap: var(--spacing-lg);
+  align-items: start;
+  margin-top: var(--spacing-xl);
+}
+
+.sidebar {
+  position: sticky;
+  top: var(--spacing-lg);
+}
+
+.content {
+  min-height: 100vh;
+}
