@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
-import localFont from "next/font/local"
-import styles from "./layout.module.css"
+import localFont from "next/font/local";
+import styles from "./layout.module.css";
 
 const caslon = localFont({
   src: [
@@ -22,7 +22,7 @@ const caslon = localFont({
     },
   ],
   variable: "--font-caslon",
-})
+});
 
 const grotesk = localFont({
   src: [
@@ -43,25 +43,23 @@ const grotesk = localFont({
     },
   ],
   variable: "--font-grotesk",
-})
+});
 
 export const metadata: Metadata = {
   title: "Dale Dai",
   description: "Description",
-}
+};
 
 export default function RootLayout({
   children,
 }: Readonly<{
-  children: React.ReactNode
+  children: React.ReactNode;
 }>) {
   return (
     <html lang="en" className={`${caslon.variable} ${grotesk.variable}`}>
       <body>
-        <div className={styles.container}>
-          {children}
-        </div>
+        <div className={styles.container}>{children}</div>
       </body>
     </html>
-  )
+  );
 }

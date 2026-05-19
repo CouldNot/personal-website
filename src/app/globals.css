@@ -1,4 +1,6 @@
-*, *::before, *::after {
+*,
+*::before,
+*::after {
   box-sizing: border-box;
 }
 
@@ -7,7 +9,8 @@
   padding: 0;
 }
 
-img, video {
+img,
+video {
   max-width: 100%;
   height: auto;
 }
@@ -21,9 +24,9 @@ body {
 }
 
 :root {
-  --color-bg: #FAFAF9;
-  --color-text: #1A1A1A;
-  --color-muted: #7C7C7C;
+  --color-bg: #fafaf9;
+  --color-text: #1a1a1a;
+  --color-muted: #7c7c7c;
   --font-serif: var(--font-caslon), Georgia, serif;
   --font-sans: var(--font-grotesk), sans-serif;
   --text-sm: 0.875rem;
@@ -32,8 +35,9 @@ body {
   --text-xl: 2rem;
   --text-2xl: 3rem;
   --spacing-sm: 0.5rem;
-  --spacing-md: 1rem;
+  --spacing-md: 1.125rem;
   --spacing-lg: 2rem;
   --spacing-xl: 4rem;
-  --max-width: 1080px;
+  --max-width: 1280px;
+  --topbar-height: calc(var(--text-2xl) + 2 * var(--spacing-sm));
 }

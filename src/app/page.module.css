@@ -1,16 +1,34 @@
-.layout {
+.hero {
   display: grid;
-  grid-template-columns: 200px 1fr;
+  grid-template-columns: 5fr 6fr;
   gap: var(--spacing-lg);
-  align-items: start;
-  margin-top: var(--spacing-xl);
+  margin-top: var(--spacing-lg);
 }
 
-.sidebar {
+.heroPainting {
+  background: coral;
+}
+
+.heroAbout {
+  background: gold;
+}
+
+.body {
+  display: grid;
+  grid-template-columns: 5fr 6fr;
+  gap: var(--spacing-lg);
+  margin-top: var(--spacing-lg);
+  margin-bottom: var(--spacing-lg);
+  align-items: start;
+}
+
+.toc {
   position: sticky;
   top: var(--spacing-lg);
+  background: cornflowerblue;
 }
 
 .content {
-  min-height: 100vh;
+  background: lightgreen;
+  font-size: var(--text-md);
 }
