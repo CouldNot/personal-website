@@ -1,8 +1,9 @@
 .layout {
   display: grid;
-  grid-template-columns: 1fr 2fr;
+  grid-template-columns: 1fr 4fr;
   gap: var(--spacing-xl);
   align-items: start;
+  padding-top: var(--spacing-2xl);
 }
 
 .sidebar {
@@ -10,13 +11,14 @@
   flex-direction: column;
   gap: var(--spacing-lg);
   position: sticky;
-  top: var(--spacing-xl);
+  top: var(--spacing-2xl);
+  align-self: start;
 }
 
 .paintingContainer {
   position: relative;
   width: 100%;
-  aspect-ratio: 3 / 4;
+  aspect-ratio: 3/5;
 }
 
 .painting {
@@ -50,7 +52,7 @@
 }
 
 .content {
-  padding-top: calc(var(--spacing-xl) * 0.5);
+  padding-top: 0;
 }
 
 .wordmark {

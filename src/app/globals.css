@@ -24,7 +24,7 @@ body {
 }
 
 :root {
-  --color-bg: #fafaf9;
+  --color-bg: #fefef4;
   --color-text: #1a1a1a;
   --color-muted: #7c7c7c;
   --font-serif: var(--font-caslon), Georgia, serif;
@@ -38,5 +38,6 @@ body {
   --spacing-md: 1.125rem;
   --spacing-lg: 2rem;
   --spacing-xl: 4rem;
-  --max-width: 1280px;
+  --spacing-2xl: 6rem;
+  --max-width: 1080px;
 }

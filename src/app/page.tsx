@@ -67,11 +67,25 @@ export default function Home() {
             hendrerit semper vel class aptent taciti sociosqu. Ad litora
             torquent per conubia nostra inceptos himenaeos.
           </p>
+          <p>
+            Phasellus tristique dui ut ligula pharetra, nec bibendum diam
+            gravida. Sed euismod felis vel velit varius, ut faucibus odio
+            dignissim. Donec malesuada eros et eros tincidunt, vel tincidunt
+            lectus tincidunt. Proin vestibulum, lorem nec dictum posuere, lorem
+            eros tincidunt turpis, nec bibendum diam gravida nec eros.
+          </p>
+          <p>
+            Vestibulum ante ipsum primis in faucibus orci luctus et ultrices
+            posuere cubilia curae; Curabitur euismod, nisi vel consectetur
+            tincidunt, nisi nisi aliquam eros, nec bibendum diam gravida nec
+            eros. Sed euismod felis vel velit varius, ut faucibus odio
+            dignissim.
+          </p>
         </section>
 
         <section className={styles.projects}>
           <div className={styles.projectsPlaceholder}>
-            {Array.from({ length: 3 }, (_, i) => (
+            {Array.from({ length: 15 }, (_, i) => (
               <div key={i} className={styles.projectCard} />
             ))}
           </div>
