@@ -1,17 +1,63 @@
-import TopBar from "./components/TopBar/TopBar";
+import Image from "next/image";
+import { Icon } from "@iconify/react";
 import styles from "./page.module.css";
-import Painting from "./components/Painting/Painting";
 
 export default function Home() {
   return (
-    <>
-      <TopBar cvUrl="https://google.com" />
-
-      <section className={styles.hero}>
-        <div className={styles.heroPainting}>
-          <Painting />
+    <div className={styles.layout}>
+      <aside className={styles.sidebar}>
+        <div className={styles.paintingContainer}>
+          <Image
+            src="/warbler.webp"
+            alt="Warbler bird painting"
+            fill
+            className={styles.painting}
+            priority
+          />
         </div>
-        <div className={styles.heroAbout}>
+
+        <div className={styles.navPlaceholder} />
+
+        <nav className={styles.links}>
+          <a
+            href="https://github.com"
+            target="_blank"
+            rel="noopener noreferrer"
+            className={styles.link}
+          >
+            github <Icon icon="ph:arrow-up-right" />
+          </a>
+          <a
+            href="https://linkedin.com"
+            target="_blank"
+            rel="noopener noreferrer"
+            className={styles.link}
+          >
+            linkedin <Icon icon="ph:arrow-up-right" />
+          </a>
+          <a
+            href="https://google.com"
+            target="_blank"
+            rel="noopener noreferrer"
+            className={styles.link}
+          >
+            cv <Icon icon="ph:arrow-up-right" />
+          </a>
+          <a
+            href="https://www.goodreads.com"
+            target="_blank"
+            rel="noopener noreferrer"
+            className={styles.link}
+          >
+            goodreads <Icon icon="ph:arrow-up-right" />
+          </a>
+        </nav>
+      </aside>
+
+      <main className={styles.content}>
+        <h1 className={styles.wordmark}>dale dai</h1>
+
+        <section className={styles.about}>
           <p>
             Lorem ipsum dolor sit amet consectetur adipiscing elit. Quisque
             faucibus ex sapien vitae pellentesque sem placerat. In id cursus mi
@@ -19,35 +65,18 @@ export default function Home() {
             tempor. Pulvinar vivamus fringilla lacus nec metus bibendum egestas.
             Iaculis massa nisl malesuada lacinia integer nunc posuere. Ut
             hendrerit semper vel class aptent taciti sociosqu. Ad litora
-            torquent per conubia nostra inceptos himenaeos. Lorem ipsum dolor
-            sit amet consectetur adipiscing elit. Quisque faucibus ex sapien
-            vitae pellentesque sem placerat. In id cursus mi pretium tellus duis
-            convallis. Tempus leo eu aenean sed diam urna tempor. Pulvinar
-            vivamus fringilla lacus nec metus bibendum egestas. Iaculis massa
-            nisl malesuada lacinia integer nunc posuere. Ut hendrerit semper vel
-            class aptent taciti sociosqu. Ad litora torquent per conubia nostra
-            inceptos himenaeos.
+            torquent per conubia nostra inceptos himenaeos.
           </p>
-        </div>
-      </section>
+        </section>
 
-      <div className={styles.body}>
-        <aside className={styles.toc}>
-          <p>1 / about</p>
-          <p>2 projects</p>
-          <p>3 experience</p>
-          <p>4 writing</p>
-        </aside>
-        <main className={styles.content}>
-          {Array.from({ length: 30 }, (_, i) => (
-            <p key={i}>
-              Paragraph {i + 1}. Lorem ipsum dolor sit amet consectetur
-              adipiscing elit. Quisque faucibus ex sapien vitae pellentesque sem
-              placerat. In id cursus mi pretium tellus duis convallis.
-            </p>
-          ))}
-        </main>
-      </div>
-    </>
+        <section className={styles.projects}>
+          <div className={styles.projectsPlaceholder}>
+            {Array.from({ length: 3 }, (_, i) => (
+              <div key={i} className={styles.projectCard} />
+            ))}
+          </div>
+        </section>
+      </main>
+    </div>
   );
 }

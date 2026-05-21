@@ -39,5 +39,4 @@ body {
   --spacing-lg: 2rem;
   --spacing-xl: 4rem;
   --max-width: 1280px;
-  --topbar-height: calc(var(--text-2xl) + 2 * var(--spacing-sm));
 }
