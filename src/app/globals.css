@@ -39,5 +39,5 @@ body {
   --spacing-lg: 2rem;
   --spacing-xl: 4rem;
   --spacing-2xl: 6rem;
-  --max-width: 1080px;
+  --max-width: 960px;
 }
