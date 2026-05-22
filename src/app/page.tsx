@@ -1,6 +1,7 @@
 import Image from "next/image";
 import { Icon } from "@iconify/react";
 import styles from "./page.module.css";
+import ProjectCard from "./components/ProjectCard";
 
 export default function Home() {
   return (
@@ -85,9 +86,7 @@ export default function Home() {
 
         <section className={styles.projects}>
           <div className={styles.projectsPlaceholder}>
-            {Array.from({ length: 15 }, (_, i) => (
-              <div key={i} className={styles.projectCard} />
-            ))}
+            <ProjectCard></ProjectCard>
           </div>
         </section>
       </main>

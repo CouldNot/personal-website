@@ -1,0 +1,19 @@
+.layout {
+  display: flex;
+  flex-direction: row;
+  gap: var(--spacing-lg);
+}
+
+.infoStack {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-small);
+}
+
+.placeholderIcon {
+  height: 50px;
+  width: 50px;
+  opacity: 0.2;
+  background-color: var(--color-muted);
+  border-radius: 20%;
+}
