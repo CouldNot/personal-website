@@ -5,8 +5,20 @@ export default function ProjectCard() {
     <div className={styles.layout}>
       <div className={styles.placeholderIcon}></div>
       <div className={styles.infoStack}>
-        <p>lorem ipsum</p>
-        <p>lorem ipsum</p>
+        <div className={styles.titleRow}>
+          <div className={styles.titleSet}>
+            <p>Project Name</p>
+            <span className={styles.projectDescription}>•</span>
+            <p className={styles.projectDescription}>No-code LaTeX editor</p>
+          </div>
+          <p className={styles.projectYear}>2026</p>
+        </div>
+        {Array.from({ length: 2 }, (_, i) => (
+          <div key={i} className={styles.descriptionRow}>
+            <span>—</span>
+            <p>lorem ipsum</p>
+          </div>
+        ))}
       </div>
     </div>
   );

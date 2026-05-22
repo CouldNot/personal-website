@@ -85,8 +85,10 @@ export default function Home() {
         </section>
 
         <section className={styles.projects}>
-          <div className={styles.projectsPlaceholder}>
-            <ProjectCard></ProjectCard>
+          <div className={styles.projectContainer}>
+            {Array.from({ length: 4 }, (_, i) => (
+              <ProjectCard key={i}></ProjectCard>
+            ))}
           </div>
         </section>
       </main>
