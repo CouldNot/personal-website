@@ -82,6 +82,7 @@ export default function Home() {
             eros. Sed euismod felis vel velit varius, ut faucibus odio
             dignissim.
           </p>
+          <p className={styles.email}>hi@daled.ai</p>
         </section>
 
         <section className={styles.projects}>
