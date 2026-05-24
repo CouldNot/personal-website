@@ -50,6 +50,7 @@
 .email {
   font-family: var(--font-serif);
   font-style: italic;
+  font-size: var(--text-lg);
   margin-top: var(--spacing-md);
 }
 
