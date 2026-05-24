@@ -1,7 +1,8 @@
 import Image from "next/image";
 import { Icon } from "@iconify/react";
 import styles from "./page.module.css";
-import ProjectCard from "./components/ProjectCard";
+import ProjectCard from "./components/ProjectCard/ProjectCard";
+import ExperienceCard from "./components/ExperienceCard/ExperienceCard";
 
 export default function Home() {
   return (
@@ -89,6 +90,14 @@ export default function Home() {
           <div className={styles.projectContainer}>
             {Array.from({ length: 4 }, (_, i) => (
               <ProjectCard key={i}></ProjectCard>
+            ))}
+          </div>
+        </section>
+
+        <section className={styles.experience}>
+          <div className={styles.experienceContainer}>
+            {Array.from({ length: 4 }, (_, i) => (
+              <ExperienceCard key={i}></ExperienceCard>
             ))}
           </div>
         </section>

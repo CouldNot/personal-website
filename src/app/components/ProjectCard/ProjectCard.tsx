@@ -7,9 +7,9 @@ export default function ProjectCard() {
       <div className={styles.infoStack}>
         <div className={styles.titleRow}>
           <div className={styles.titleSet}>
-            <p>Project Name</p>
+            <p>OpenClaw</p>
             <span className={styles.projectDescription}>•</span>
-            <p className={styles.projectDescription}>No-code LaTeX editor</p>
+            <p className={styles.projectDescription}>Personal AI Assistant</p>
           </div>
           <p className={styles.projectYear}>2026</p>
         </div>

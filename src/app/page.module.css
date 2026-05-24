@@ -77,14 +77,18 @@
   margin-top: var(--spacing-xl);
 }
 
+.experience {
+  margin-top: var(--spacing-xl);
+}
+
 .projectContainer {
   display: flex;
   flex-direction: column;
   gap: var(--spacing-lg);
 }
 
-.projectCard {
-  height: 80px;
-  background: var(--color-muted);
-  opacity: 0.2;
+.experienceContainer {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-lg);
 }

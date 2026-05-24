@@ -2,6 +2,7 @@
   display: flex;
   flex-direction: row;
   gap: var(--spacing-md);
+  align-items: start;
 }
 
 .infoStack {
@@ -23,14 +24,7 @@
   gap: var(--spacing-sm);
 }
 
-.projectDescription {
-  color: var(--color-muted);
-}
-
-.descriptionRow {
-  display: flex;
-  flex-direction: row;
-  gap: var(--spacing-sm);
+.role {
   color: var(--color-muted);
 }
 
@@ -41,7 +35,8 @@
 .placeholderIcon {
   height: 50px;
   width: 50px;
+  flex-shrink: 0;
   opacity: 0.2;
   background-color: var(--color-muted);
-  border-radius: 20%;
+  border-radius: 50%;
 }
