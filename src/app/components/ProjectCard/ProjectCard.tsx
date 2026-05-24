@@ -7,7 +7,14 @@ export default function ProjectCard() {
       <div className={styles.infoStack}>
         <div className={styles.titleRow}>
           <div className={styles.titleSet}>
-            <p>OpenClaw</p>
+            <a
+              href="https://google.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              className={styles.projectLink}
+            >
+              OpenClaw
+            </a>
             <span className={styles.projectDescription}>•</span>
             <p className={styles.projectDescription}>Personal AI Assistant</p>
           </div>

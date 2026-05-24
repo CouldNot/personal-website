@@ -28,6 +28,13 @@
   color: var(--color-muted);
 }
 
+.projectLink {
+  text-decoration: underline dotted;
+  text-decoration-thickness: 0.15em;
+  text-underline-offset: 0.25em;
+  color: var(--color-text);
+}
+
 .descriptionRow {
   display: flex;
   flex-direction: row;
