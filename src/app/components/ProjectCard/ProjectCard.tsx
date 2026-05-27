@@ -1,6 +1,20 @@
 import styles from "./ProjectCard.module.css";
 
-export default function ProjectCard() {
+interface ProjectCardProps {
+  name: string;
+  href: string;
+  description: string;
+  year: number;
+  bullets: string[];
+}
+
+export default function ProjectCard({
+  name,
+  href,
+  description,
+  year,
+  bullets,
+}: ProjectCardProps) {
   return (
     <div className={styles.layout}>
       <div className={styles.placeholderIcon}></div>
@@ -8,22 +22,22 @@ export default function ProjectCard() {
         <div className={styles.titleRow}>
           <div className={styles.titleSet}>
             <a
-              href="https://google.com"
+              href={href}
               target="_blank"
               rel="noopener noreferrer"
               className={styles.projectLink}
             >
-              OpenClaw
+              {name}
             </a>
             <span className={styles.projectDescription}>•</span>
-            <p className={styles.projectDescription}>Personal AI Assistant</p>
+            <p className={styles.projectDescription}>{description}</p>
           </div>
-          <p className={styles.projectYear}>2026</p>
+          <p className={styles.projectYear}>{year}</p>
         </div>
-        {Array.from({ length: 2 }, (_, i) => (
+        {bullets.map((bullet, i) => (
           <div key={i} className={styles.descriptionRow}>
             <span>—</span>
-            <p>lorem ipsum</p>
+            <p>{bullet}</p>
           </div>
         ))}
       </div>

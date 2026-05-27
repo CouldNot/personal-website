@@ -88,8 +88,37 @@ export default function Home() {
 
         <section className={styles.projects}>
           <div className={styles.projectContainer}>
-            {Array.from({ length: 4 }, (_, i) => (
-              <ProjectCard key={i}></ProjectCard>
+            {[
+              {
+                name: "OpenClaw",
+                href: "https://google.com",
+                description: "Personal AI Assistant",
+                year: 2026,
+                bullets: ["lorem ipsum", "lorem ipsum"],
+              },
+              {
+                name: "OpenClaw",
+                href: "https://google.com",
+                description: "Personal AI Assistant",
+                year: 2026,
+                bullets: ["lorem ipsum", "lorem ipsum"],
+              },
+              {
+                name: "OpenClaw",
+                href: "https://google.com",
+                description: "Personal AI Assistant",
+                year: 2026,
+                bullets: ["lorem ipsum", "lorem ipsum"],
+              },
+              {
+                name: "OpenClaw",
+                href: "https://google.com",
+                description: "Personal AI Assistant",
+                year: 2026,
+                bullets: ["lorem ipsum", "lorem ipsum"],
+              },
+            ].map((project, i) => (
+              <ProjectCard key={i} {...project} />
             ))}
           </div>
         </section>
