@@ -1,6 +1,5 @@
 .layout {
   display: flex;
-  flex-direction: row;
   gap: var(--spacing-md);
   align-items: start;
 }
@@ -14,13 +13,11 @@
 
 .titleRow {
   display: flex;
-  flex-direction: row;
   justify-content: space-between;
 }
 
 .titleSet {
   display: flex;
-  flex-direction: row;
   gap: var(--spacing-sm);
 }
 

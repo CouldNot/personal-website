@@ -126,7 +126,7 @@ export default function Home() {
         <section className={styles.experience}>
           <div className={styles.experienceContainer}>
             {Array.from({ length: 4 }, (_, i) => (
-              <ExperienceCard key={i}></ExperienceCard>
+              <ExperienceCard key={i} />
             ))}
           </div>
         </section>
