@@ -125,8 +125,29 @@ export default function Home() {
 
         <section className={styles.experience}>
           <div className={styles.experienceContainer}>
-            {Array.from({ length: 4 }, (_, i) => (
-              <ExperienceCard key={i} />
+            {[
+              {
+                company: "Apple",
+                dateRange: "May 2025 — Present",
+                role: "Software Engineer",
+              },
+              {
+                company: "Apple",
+                dateRange: "May 2025 — Present",
+                role: "Software Engineer",
+              },
+              {
+                company: "Apple",
+                dateRange: "May 2025 — Present",
+                role: "Software Engineer",
+              },
+              {
+                company: "Apple",
+                dateRange: "May 2025 — Present",
+                role: "Software Engineer",
+              },
+            ].map((experience, i) => (
+              <ExperienceCard key={i} {...experience} />
             ))}
           </div>
         </section>
