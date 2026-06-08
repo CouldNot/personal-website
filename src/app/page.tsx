@@ -13,6 +13,7 @@ export default function Home() {
             src="/warbler.webp"
             alt="Warbler bird painting"
             fill
+            sizes="20vw"
             className={styles.painting}
             priority
           />
