@@ -1,22 +1,15 @@
-import Image from "next/image";
 import { Icon } from "@iconify/react";
 import styles from "./page.module.css";
 import ProjectCard from "./components/ProjectCard/ProjectCard";
 import ExperienceCard from "./components/ExperienceCard/ExperienceCard";
+import FlowField from "./components/FlowField/FlowField";
 
 export default function Home() {
   return (
     <div className={styles.layout}>
       <aside className={styles.sidebar}>
         <div className={styles.paintingContainer}>
-          <Image
-            src="/warbler.webp"
-            alt="Warbler bird painting"
-            fill
-            sizes="20vw"
-            className={styles.painting}
-            priority
-          />
+          <FlowField />
         </div>
 
         <div className={styles.navPlaceholder} />
