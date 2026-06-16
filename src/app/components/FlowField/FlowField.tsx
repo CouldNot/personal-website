@@ -36,11 +36,12 @@ function makeNoise() {
   }
 }
 
+const BG = '#1a1814'
 const COLORS = [
-  'rgba(26, 26, 26, 0.07)',
-  'rgba(26, 26, 26, 0.05)',
-  'rgba(80, 52, 22, 0.06)',
-  'rgba(110, 75, 35, 0.04)',
+  'rgba(238, 228, 205, 0.18)',
+  'rgba(238, 228, 205, 0.10)',
+  'rgba(200, 168, 110, 0.14)',
+  'rgba(180, 140, 80, 0.09)',
 ]
 
 export default function FlowField() {
@@ -61,7 +62,7 @@ export default function FlowField() {
     canvas.height = H * dpr
     ctx.scale(dpr, dpr)
 
-    ctx.fillStyle = '#fefef4'
+    ctx.fillStyle = BG
     ctx.fillRect(0, 0, W, H)
 
     const particles = Array.from({ length: 350 }, () => ({
@@ -74,7 +75,7 @@ export default function FlowField() {
     let raf: number
 
     function tick() {
-      ctx.fillStyle = 'rgba(254, 254, 244, 0.018)'
+      ctx.fillStyle = 'rgba(26, 24, 20, 0.022)'
       ctx.fillRect(0, 0, W, H)
 
       for (const p of particles) {
