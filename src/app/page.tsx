@@ -2,6 +2,7 @@ import { Icon } from "@iconify/react";
 import styles from "./page.module.css";
 import ProjectCard from "./components/ProjectCard/ProjectCard";
 import ExperienceCard from "./components/ExperienceCard/ExperienceCard";
+import Seascape from "./components/Seascape/Seascape";
 import FlowField from "./components/FlowField/FlowField";
 
 export default function Home() {
@@ -9,7 +10,8 @@ export default function Home() {
     <div className={styles.layout}>
       <aside className={styles.sidebar}>
         <div className={styles.paintingContainer}>
-          <FlowField />
+          <Seascape />
+          {/* <FlowField /> */}
         </div>
 
         <div className={styles.navPlaceholder} />

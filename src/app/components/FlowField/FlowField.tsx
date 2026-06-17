@@ -1,111 +1,70 @@
 'use client'
 
 import { useEffect, useRef } from 'react'
+import type P5 from 'p5'
 import styles from './FlowField.module.css'
 
-const TWO_PI = Math.PI * 2
-
-function makeNoise() {
-  const perm = new Uint8Array(512)
-  for (let i = 0; i < 256; i++) perm[i] = i
-  for (let i = 255; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1))
-    ;[perm[i], perm[j]] = [perm[j], perm[i]]
-  }
-  for (let i = 0; i < 256; i++) perm[i + 256] = perm[i]
-
-  const fade = (t: number) => t * t * t * (t * (t * 6 - 15) + 10)
-  const lerp = (a: number, b: number, t: number) => a + t * (b - a)
-  const grad = (h: number, x: number, y: number) =>
-    ((h & 1) ? -x : x) + ((h & 2) ? -y : y)
-
-  return (x: number, y: number) => {
-    const X = Math.floor(x) & 255
-    const Y = Math.floor(y) & 255
-    x -= Math.floor(x)
-    y -= Math.floor(y)
-    const u = fade(x)
-    const v = fade(y)
-    const a = perm[X] + Y
-    const b = perm[X + 1] + Y
-    return lerp(
-      lerp(grad(perm[a], x, y), grad(perm[b], x - 1, y), u),
-      lerp(grad(perm[a + 1], x, y - 1), grad(perm[b + 1], x - 1, y - 1), u),
-      v
-    )
-  }
-}
-
-const BG = '#1a1814'
-const COLORS = [
-  'rgba(238, 228, 205, 0.18)',
-  'rgba(238, 228, 205, 0.10)',
-  'rgba(200, 168, 110, 0.14)',
-  'rgba(180, 140, 80, 0.09)',
-]
+type Particle = { x: number; y: number; g: number; s: number }
 
 export default function FlowField() {
-  const canvasRef = useRef<HTMLCanvasElement>(null)
+  const containerRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
-    const canvas = canvasRef.current
-    if (!canvas) return
-    const ctx = canvas.getContext('2d')
-    if (!ctx) return
+    const container = containerRef.current
+    if (!container) return
 
-    const noise = makeNoise()
-    const dpr = window.devicePixelRatio || 1
-    const W = canvas.offsetWidth
-    const H = canvas.offsetHeight
+    let instance: P5 | undefined
 
-    canvas.width = W * dpr
-    canvas.height = H * dpr
-    ctx.scale(dpr, dpr)
+    import('p5').then(({ default: P5 }) => {
+      instance = new P5((p: P5) => {
+        const particles: Particle[] = []
+        let time = 0
 
-    ctx.fillStyle = BG
-    ctx.fillRect(0, 0, W, H)
-
-    const particles = Array.from({ length: 350 }, () => ({
-      x: Math.random() * W,
-      y: Math.random() * H,
-      color: COLORS[Math.floor(Math.random() * COLORS.length)],
-    }))
-
-    let t = 0
-    let raf: number
-
-    function tick() {
-      ctx.fillStyle = 'rgba(26, 24, 20, 0.022)'
-      ctx.fillRect(0, 0, W, H)
-
-      for (const p of particles) {
-        const angle = noise(p.x * 0.003, p.y * 0.003 + t) * TWO_PI * 2
-        const nx = p.x + Math.cos(angle) * 0.9
-        const ny = p.y + Math.sin(angle) * 0.9
-
-        ctx.beginPath()
-        ctx.moveTo(p.x, p.y)
-        ctx.lineTo(nx, ny)
-        ctx.strokeStyle = p.color
-        ctx.lineWidth = 1.1
-        ctx.stroke()
-
-        p.x = nx
-        p.y = ny
-
-        if (p.x < 0 || p.x > W || p.y < 0 || p.y > H) {
-          p.x = Math.random() * W
-          p.y = Math.random() * H
+        p.setup = () => {
+          p.pixelDensity(window.devicePixelRatio)
+          const rect = container.getBoundingClientRect()
+          const W = Math.round(rect.width)
+          const H = rect.height > 0 ? Math.round(rect.height) : Math.round(W * 5 / 3)
+          p.createCanvas(W, H)
+          p.frameRate(30)
         }
-      }
 
-      t += 0.0003
-      raf = requestAnimationFrame(tick)
-    }
+        p.draw = () => {
+          const W = p.width
 
-    raf = requestAnimationFrame(tick)
-    return () => cancelAnimationFrame(raf)
+          p.background(0, 15)
+          p.filter(p.BLUR)
+          p.stroke(190)
+
+          for (let i = 9; i > 0; i--) {
+            particles[time % (W * 9)] = { x: (time * 99) % W, y: 0, g: 0, s: 1.5 }
+            time++
+          }
+
+          for (const pt of particles) {
+            if (!pt) continue
+            pt.s *= 0.997
+            p.strokeWeight(pt.s)
+
+            const n = p.noise(pt.x / W, pt.y / 9, time / W)
+
+            if (n > 0.4) {
+              pt.g += 0.5
+              pt.y += pt.g
+            } else {
+              pt.x += n % 0.1 > 0.05 ? 1 : -1
+              pt.g = 0
+              pt.y += 0.5
+            }
+
+            p.point(pt.x, pt.y)
+          }
+        }
+      }, container)
+    })
+
+    return () => instance?.remove()
   }, [])
 
-  return <canvas ref={canvasRef} className={styles.canvas} />
+  return <div ref={containerRef} className={styles.container} />
 }
