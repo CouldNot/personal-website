@@ -29,7 +29,7 @@
 .toc {
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-xs);
+  gap: 0.15rem;
 }
 
 .tocItem {
@@ -40,7 +40,6 @@
   text-decoration: none;
   display: flex;
   align-items: baseline;
-  gap: var(--spacing-sm);
   cursor: default;
 }
 
