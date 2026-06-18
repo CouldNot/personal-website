@@ -14,7 +14,17 @@ export default function Home() {
           {/* <FlowField /> */}
         </div>
 
-        <div className={styles.navPlaceholder} />
+        <nav className={styles.toc}>
+          {[
+            { index: 1, label: 'about' },
+            { index: 2, label: 'projects' },
+            { index: 3, label: 'writing' },
+          ].map(({ index, label }) => (
+            <a key={label} className={`${styles.tocItem} ${index === 1 ? styles.tocItemActive : ''}`}>
+              {index} / {label}
+            </a>
+          ))}
+        </nav>
 
         <nav className={styles.links}>
           <a

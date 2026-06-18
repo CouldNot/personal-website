@@ -26,10 +26,26 @@
   object-fit: cover;
 }
 
-.navPlaceholder {
-  height: 120px;
-  background: var(--color-muted);
-  opacity: 0.2;
+.toc {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+}
+
+.tocItem {
+  font-family: var(--font-sans);
+  font-size: var(--text-lg);
+  font-weight: 600;
+  color: var(--color-muted);
+  text-decoration: none;
+  display: flex;
+  align-items: baseline;
+  gap: 0.4rem;
+  cursor: default;
+}
+
+.tocItemActive {
+  color: var(--color-text);
 }
 
 .links {
