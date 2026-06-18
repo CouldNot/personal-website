@@ -35,17 +35,18 @@
 .tocItem {
   font-family: var(--font-sans);
   font-size: var(--text-lg);
-  font-weight: 600;
+  font-weight: 400;
   color: var(--color-muted);
   text-decoration: none;
   display: flex;
   align-items: baseline;
-  gap: 0.4rem;
+  gap: var(--spacing-sm);
   cursor: default;
 }
 
 .tocItemActive {
   color: var(--color-text);
+  font-weight: 600;
 }
 
 .links {
