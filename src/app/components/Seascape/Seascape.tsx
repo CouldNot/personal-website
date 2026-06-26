@@ -209,7 +209,7 @@ export default function Seascape() {
           p.pixelDensity(1)
           const rect = container.getBoundingClientRect()
           const W = Math.round(rect.width)
-          const H = rect.height > 0 ? Math.round(rect.height) : Math.round(W * 5 / 3)
+          const H = rect.height > 0 ? Math.round(rect.height) : Math.round(W * 3 / 2)
           p.createCanvas(W, H, p.WEBGL)
           p.rectMode(p.CENTER)
           p.noStroke()
