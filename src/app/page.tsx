@@ -3,7 +3,6 @@ import styles from "./page.module.css";
 import ProjectCard from "./components/ProjectCard/ProjectCard";
 import ExperienceCard from "./components/ExperienceCard/ExperienceCard";
 import Seascape from "./components/Seascape/Seascape";
-import FlowField from "./components/FlowField/FlowField";
 
 export default function Home() {
   return (
@@ -11,7 +10,6 @@ export default function Home() {
       <aside className={styles.sidebar}>
         <div className={styles.paintingContainer}>
           <Seascape />
-          {/* <FlowField /> */}
         </div>
 
         <nav className={styles.toc}>
