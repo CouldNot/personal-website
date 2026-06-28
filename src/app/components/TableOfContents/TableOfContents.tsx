@@ -6,7 +6,8 @@ import styles from "../../page.module.css";
 const sections = [
   { id: "about", index: 1, label: "about" },
   { id: "projects", index: 2, label: "projects" },
-  { id: "writing", index: 3, label: "writing" },
+  { id: "experience", index: 3, label: "experience" },
+  { id: "writing", index: 4, label: "writing" },
 ];
 
 export default function TableOfContents() {
