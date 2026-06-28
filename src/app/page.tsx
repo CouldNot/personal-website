@@ -118,7 +118,7 @@ export default function Home() {
           </div>
         </section>
 
-        <section id="writing" className={styles.experience}>
+        <section id="experience" className={styles.experience}>
           <div className={styles.experienceContainer}>
             {[
               {
