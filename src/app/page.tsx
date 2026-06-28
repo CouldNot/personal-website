@@ -3,6 +3,7 @@ import styles from "./page.module.css";
 import ProjectCard from "./components/ProjectCard/ProjectCard";
 import ExperienceCard from "./components/ExperienceCard/ExperienceCard";
 import Seascape from "./components/Seascape/Seascape";
+import TableOfContents from "./components/TableOfContents/TableOfContents";
 
 export default function Home() {
   return (
@@ -12,17 +13,7 @@ export default function Home() {
           <Seascape />
         </div>
 
-        <nav className={styles.toc}>
-          {[
-            { index: 1, label: 'about' },
-            { index: 2, label: 'projects' },
-            { index: 3, label: 'writing' },
-          ].map(({ index, label }) => (
-            <a key={label} className={`${styles.tocItem} ${index === 1 ? styles.tocItemActive : ''}`}>
-              {index} / {label}
-            </a>
-          ))}
-        </nav>
+        <TableOfContents />
 
         <nav className={styles.links}>
           <a
@@ -63,7 +54,7 @@ export default function Home() {
       <main className={styles.content}>
         <h1 className={styles.wordmark}>dale dai</h1>
 
-        <section className={styles.about}>
+        <section id="about" className={styles.about}>
           <p>
             Lorem ipsum dolor sit amet consectetur adipiscing elit. Quisque
             faucibus ex sapien vitae pellentesque sem placerat. In id cursus mi
@@ -90,7 +81,7 @@ export default function Home() {
           <p className={styles.email}>hi@daled.ai</p>
         </section>
 
-        <section className={styles.projects}>
+        <section id="projects" className={styles.projects}>
           <div className={styles.projectContainer}>
             {[
               {
@@ -127,7 +118,7 @@ export default function Home() {
           </div>
         </section>
 
-        <section className={styles.experience}>
+        <section id="writing" className={styles.experience}>
           <div className={styles.experienceContainer}>
             {[
               {
