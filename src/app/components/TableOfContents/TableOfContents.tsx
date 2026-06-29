@@ -35,6 +35,11 @@ export default function TableOfContents() {
       {sections.map(({ id, index, label }) => (
         <a
           key={id}
+          href={`#${id}`}
+          onClick={(e) => {
+            e.preventDefault();
+            document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
+          }}
           className={`${styles.tocItem} ${active === id ? styles.tocItemActive : ""}`}
         >
           {index} / {label}

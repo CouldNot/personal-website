@@ -42,7 +42,7 @@
   text-decoration: none;
   display: flex;
   align-items: baseline;
-  cursor: default;
+  cursor: pointer;
 }
 
 .tocItemActive {
