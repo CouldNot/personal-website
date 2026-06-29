@@ -38,7 +38,11 @@ export default function TableOfContents() {
           href={`#${id}`}
           onClick={(e) => {
             e.preventDefault();
-            document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
+            if (id === "about") {
+              window.scrollTo({ top: 0, behavior: "smooth" });
+            } else {
+              document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
+            }
           }}
           className={`${styles.tocItem} ${active === id ? styles.tocItemActive : ""}`}
         >
