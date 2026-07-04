@@ -146,6 +146,9 @@ export default function Home() {
             ))}
           </div>
         </section>
+
+        <section id="writing" className={styles.writing}>
+        </section>
       </main>
     </div>
   );
