@@ -15,6 +15,10 @@ video {
   height: auto;
 }
 
+html {
+  scroll-padding-top: var(--spacing-2xl);
+}
+
 body {
   line-height: 1.5;
   -webkit-font-smoothing: antialiased;
