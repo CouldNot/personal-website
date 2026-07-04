@@ -112,4 +112,18 @@
 .writing {
   margin-top: var(--spacing-xl);
   min-height: 40vh;
+  background-color: #f0efe6;
+  border-radius: 4px;
+}
+
+.footer {
+  display: flex;
+  justify-content: space-between;
+  margin-top: var(--spacing-xl);
+  padding-top: var(--spacing-md);
+  padding-bottom: var(--spacing-lg);
+  border-top: 1px solid #d8d8cc;
+  font-family: var(--font-sans);
+  font-size: var(--text-sm);
+  color: var(--color-muted);
 }

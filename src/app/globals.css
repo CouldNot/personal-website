@@ -16,7 +16,7 @@ video {
 }
 
 html {
-  scroll-padding-top: var(--spacing-2xl);
+  scroll-padding-top: var(--spacing-xl);
 }
 
 body {
