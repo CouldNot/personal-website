@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import styles from "../../page.module.css";
 
 const sections = [
@@ -12,6 +12,20 @@ const sections = [
 
 export default function TableOfContents() {
   const [active, setActive] = useState("about");
+  const navRef = useRef<HTMLElement>(null);
+  const rowRefs = useRef<(HTMLAnchorElement | null)[]>([]);
+  const [slashTop, setSlashTop] = useState<number | null>(null);
+
+  useLayoutEffect(() => {
+    const activeIndex = sections.findIndex((s) => s.id === active);
+    const activeRow = rowRefs.current[activeIndex];
+    const nav = navRef.current;
+    if (activeRow && nav) {
+      const navRect = nav.getBoundingClientRect();
+      const rowRect = activeRow.getBoundingClientRect();
+      setSlashTop(rowRect.top - navRect.top);
+    }
+  }, [active]);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -31,10 +45,18 @@ export default function TableOfContents() {
   }, []);
 
   return (
-    <nav className={styles.toc}>
-      {sections.map(({ id, index, label }) => (
+    <nav className={styles.toc} ref={navRef}>
+      {slashTop !== null && (
+        <span className={styles.tocSlash} style={{ top: slashTop }}>
+          /
+        </span>
+      )}
+      {sections.map(({ id, index, label }, i) => (
         <a
           key={id}
+          ref={(el) => {
+            rowRefs.current[i] = el;
+          }}
           href={`#${id}`}
           onClick={(e) => {
             e.preventDefault();
@@ -46,7 +68,9 @@ export default function TableOfContents() {
           }}
           className={`${styles.tocItem} ${active === id ? styles.tocItemActive : ""}`}
         >
-          {index} / {label}
+          <span className={styles.tocNum}>{index}</span>
+          <span className={styles.tocGap} />
+          <span>{label}</span>
         </a>
       ))}
     </nav>
