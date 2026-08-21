@@ -14,7 +14,11 @@ export default function TableOfContents() {
   const navRef = useRef<HTMLElement>(null);
   const rowRefs = useRef<(HTMLAnchorElement | null)[]>([]);
   const [slashTop, setSlashTop] = useState<number | null>(null);
-  const [instant, setInstant] = useState(false);
+  // Set while a click-triggered smooth scroll is in flight, so the
+  // scroll listener doesn't recompute "active" from the stale scroll
+  // position mid-flight and flash back to the previous item.
+  const pendingRef = useRef<string | null>(null);
+  const pendingTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useLayoutEffect(() => {
     const activeIndex = sections.findIndex((s) => s.id === active);
@@ -28,13 +32,7 @@ export default function TableOfContents() {
   }, [active]);
 
   useEffect(() => {
-    if (!instant) return;
-    const id = requestAnimationFrame(() => setInstant(false));
-    return () => cancelAnimationFrame(id);
-  }, [instant]);
-
-  useEffect(() => {
-    const handleScroll = () => {
+    const updateActive = () => {
       const atBottom =
         window.innerHeight + window.scrollY >=
         document.documentElement.scrollHeight - 2;
@@ -54,9 +52,44 @@ export default function TableOfContents() {
       setActive(current);
     };
 
-    handleScroll();
+    // Scroll fires far more often than the browser repaints, so reading
+    // layout (getBoundingClientRect) on every event causes forced reflows
+    // that fight with the slash's transform transition and show up as
+    // stutter. Coalesce to at most once per animation frame instead.
+    let ticking = false;
+    const handleScroll = () => {
+      // A click already knows its target; don't let the stale scroll
+      // position (read mid-animation) recompute a different "active"
+      // and flash the slash back before the scroll catches up.
+      if (pendingRef.current) return;
+      if (ticking) return;
+      ticking = true;
+      requestAnimationFrame(() => {
+        updateActive();
+        ticking = false;
+      });
+    };
+
+    const clearPending = () => {
+      if (pendingTimeoutRef.current) {
+        clearTimeout(pendingTimeoutRef.current);
+        pendingTimeoutRef.current = null;
+      }
+      if (pendingRef.current) {
+        pendingRef.current = null;
+        updateActive();
+      }
+    };
+
+    updateActive();
     window.addEventListener("scroll", handleScroll, { passive: true });
-    return () => window.removeEventListener("scroll", handleScroll);
+    // Modern browsers fire this once the (possibly smooth) scroll settles.
+    window.addEventListener("scrollend", clearPending);
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+      window.removeEventListener("scrollend", clearPending);
+      if (pendingTimeoutRef.current) clearTimeout(pendingTimeoutRef.current);
+    };
   }, []);
 
   return (
@@ -64,7 +97,7 @@ export default function TableOfContents() {
       {slashTop !== null && (
         <span
           className={styles.tocSlash}
-          style={{ top: slashTop, transition: instant ? "none" : undefined }}
+          style={{ transform: `translateY(${slashTop}px)` }}
         >
           /
         </span>
@@ -78,7 +111,13 @@ export default function TableOfContents() {
           href={`#${id}`}
           onClick={(e) => {
             e.preventDefault();
-            setInstant(true);
+            pendingRef.current = id;
+            if (pendingTimeoutRef.current) clearTimeout(pendingTimeoutRef.current);
+            // Fallback in case "scrollend" doesn't fire (unsupported
+            // browser, or the scroll gets interrupted).
+            pendingTimeoutRef.current = setTimeout(() => {
+              pendingRef.current = null;
+            }, 1000);
             setActive(id);
             if (id === "about") {
               window.scrollTo({ top: 0, behavior: "smooth" });

@@ -63,6 +63,7 @@
 
 .tocSlash {
   position: absolute;
+  top: 0;
   left: 1ch;
   width: 2.5ch;
   text-align: center;
@@ -72,7 +73,8 @@
   color: var(--color-text);
   pointer-events: none;
   user-select: none;
-  transition: top 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  will-change: transform;
+  transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .links {
