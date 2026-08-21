@@ -147,9 +147,6 @@ export default function Home() {
           </div>
         </section>
 
-        <section id="writing" className={styles.writing}>
-        </section>
-
         <footer className={styles.footer}>
           <span>dale dai</span>
           <span>built with next.js</span>

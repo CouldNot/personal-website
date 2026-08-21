@@ -72,7 +72,7 @@
   color: var(--color-text);
   pointer-events: none;
   user-select: none;
-  transition: top 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: top 0.25s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .links {

@@ -7,7 +7,6 @@ const sections = [
   { id: "about", index: 1, label: "about" },
   { id: "projects", index: 2, label: "projects" },
   { id: "experience", index: 3, label: "experience" },
-  { id: "writing", index: 4, label: "writing" },
 ];
 
 export default function TableOfContents() {
@@ -15,6 +14,7 @@ export default function TableOfContents() {
   const navRef = useRef<HTMLElement>(null);
   const rowRefs = useRef<(HTMLAnchorElement | null)[]>([]);
   const [slashTop, setSlashTop] = useState<number | null>(null);
+  const [instant, setInstant] = useState(false);
 
   useLayoutEffect(() => {
     const activeIndex = sections.findIndex((s) => s.id === active);
@@ -28,7 +28,22 @@ export default function TableOfContents() {
   }, [active]);
 
   useEffect(() => {
+    if (!instant) return;
+    const id = requestAnimationFrame(() => setInstant(false));
+    return () => cancelAnimationFrame(id);
+  }, [instant]);
+
+  useEffect(() => {
     const handleScroll = () => {
+      const atBottom =
+        window.innerHeight + window.scrollY >=
+        document.documentElement.scrollHeight - 2;
+
+      if (atBottom) {
+        setActive(sections[sections.length - 1].id);
+        return;
+      }
+
       let current = sections[0].id;
       for (const { id } of sections) {
         const el = document.getElementById(id);
@@ -47,7 +62,10 @@ export default function TableOfContents() {
   return (
     <nav className={styles.toc} ref={navRef}>
       {slashTop !== null && (
-        <span className={styles.tocSlash} style={{ top: slashTop }}>
+        <span
+          className={styles.tocSlash}
+          style={{ top: slashTop, transition: instant ? "none" : undefined }}
+        >
           /
         </span>
       )}
@@ -60,6 +78,8 @@ export default function TableOfContents() {
           href={`#${id}`}
           onClick={(e) => {
             e.preventDefault();
+            setInstant(true);
+            setActive(id);
             if (id === "about") {
               window.scrollTo({ top: 0, behavior: "smooth" });
             } else {
