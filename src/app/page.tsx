@@ -17,7 +17,7 @@ export default function Home() {
 
         <nav className={styles.links}>
           <a
-            href="https://github.com"
+            href="https://github.com/couldnot"
             target="_blank"
             rel="noopener noreferrer"
             className={styles.link}
@@ -25,7 +25,7 @@ export default function Home() {
             github <Icon icon="ph:arrow-up-right" />
           </a>
           <a
-            href="https://linkedin.com"
+            href="https://www.linkedin.com/in/dale-dai"
             target="_blank"
             rel="noopener noreferrer"
             className={styles.link}
@@ -41,7 +41,7 @@ export default function Home() {
             cv <Icon icon="ph:arrow-up-right" />
           </a>
           <a
-            href="https://www.goodreads.com"
+            href="https://www.goodreads.com/user/show/156001052-dale-dai"
             target="_blank"
             rel="noopener noreferrer"
             className={styles.link}
