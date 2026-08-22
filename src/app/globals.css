@@ -21,6 +21,22 @@ html {
   text-size-adjust: 100%;
 }
 
+/* A lightweight crossfade between the main site and the /roombarat page
+   (linked as a plain <a>, not next/link, so navigation is a real page load
+   and this native browser transition actually applies). Degrades to an
+   instant swap on browsers without support, no fallback needed. */
+@view-transition {
+  navigation: auto;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-group(*),
+  ::view-transition-old(*),
+  ::view-transition-new(*) {
+    animation: none !important;
+  }
+}
+
 body {
   line-height: 1.5;
   -webkit-font-smoothing: antialiased;

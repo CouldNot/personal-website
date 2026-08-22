@@ -69,8 +69,11 @@ export default function Home() {
             >
               University of Southern California
             </a>{" "}
-            and I like to tinker with product, engineering, and everything in
-            between.
+            and I like making things for the internet (and occasionally the{" "}
+            <a href="/roombarat" className={styles.aboutLink}>
+              floor
+            </a>
+            ).
           </p>
           <p>
             My love of software began with making animations on{" "}
@@ -82,8 +85,7 @@ export default function Home() {
             >
               Scratch
             </a>{" "}
-            at eight years old. I&apos;ve made a lot of other things since then,
-            like{" "}
+            at eight years old. Since then, I&apos;ve built{" "}
             <a
               href="https://github.com/CouldNot/brawldle"
               target="_blank"

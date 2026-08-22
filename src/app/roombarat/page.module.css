@@ -1,0 +1,43 @@
+.layout {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: var(--spacing-2xl) var(--spacing-lg);
+}
+
+@media (max-width: 720px) {
+  .layout {
+    padding: var(--spacing-xl) var(--spacing-md);
+  }
+}
+
+.back {
+  font-family: var(--font-sans);
+  font-size: var(--text-md);
+  color: var(--color-text);
+  text-decoration: underline dotted;
+  text-decoration-thickness: 0.1em;
+  text-underline-offset: 0.25em;
+}
+
+.figure {
+  margin-top: var(--spacing-xl);
+}
+
+.imageFrame {
+  position: relative;
+  width: 100%;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+}
+
+.image {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.caption {
+  margin-top: var(--spacing-md);
+  font-family: var(--font-sans);
+  font-size: var(--text-sm);
+  color: var(--color-muted);
+}
