@@ -72,29 +72,6 @@ export default function TableOfContents() {
       }
     };
 
-    const observer = new IntersectionObserver(
-      (entries) => {
-        for (const entry of entries) {
-          isIntersecting.set(entry.target.id, entry.isIntersecting);
-        }
-        pickActive();
-      },
-      // Shrink the viewport to a band from 15% to 30% down from the top.
-      { rootMargin: "-15% 0px -70% 0px", threshold: 0 },
-    );
-
-    sections.forEach(({ id }) => {
-      const el = document.getElementById(id);
-      if (el) observer.observe(el);
-    });
-
-    // IntersectionObserver only calls back when a section's intersection
-    // state *changes*. Scrolling the last few pixels to the true bottom of
-    // the page usually doesn't change any section's state (it was already
-    // the only one crossing the reading line), so nothing would otherwise
-    // re-run the atBottom check above right when it starts to matter. This
-    // listener's only job is to catch that moment; it doesn't do any of
-    // the section geometry work itself.
     let ticking = false;
     const handleScroll = () => {
       if (ticking) return;
@@ -104,7 +81,6 @@ export default function TableOfContents() {
         ticking = false;
       });
     };
-    window.addEventListener("scroll", handleScroll, { passive: true });
 
     const clearPending = () => {
       if (pendingTimeoutRef.current) {
@@ -116,13 +92,59 @@ export default function TableOfContents() {
       // is the whole point of the split above.
       pendingRef.current = null;
     };
-    // Modern browsers fire this once a (possibly smooth) scroll settles.
-    window.addEventListener("scrollend", clearPending);
 
-    return () => {
-      observer.disconnect();
+    let observer: IntersectionObserver | undefined;
+    const startTracking = () => {
+      observer = new IntersectionObserver(
+        (entries) => {
+          for (const entry of entries) {
+            isIntersecting.set(entry.target.id, entry.isIntersecting);
+          }
+          pickActive();
+        },
+        // Shrink the viewport to a band from 15% to 30% down from the top.
+        { rootMargin: "-15% 0px -70% 0px", threshold: 0 },
+      );
+      sections.forEach(({ id }) => {
+        const el = document.getElementById(id);
+        if (el) observer!.observe(el);
+      });
+      // IntersectionObserver only calls back when a section's intersection
+      // state *changes*. Scrolling the last few pixels to the true bottom
+      // of the page usually doesn't change any section's state (it was
+      // already the only one crossing the reading line), so nothing would
+      // otherwise re-run the atBottom check above right when it starts to
+      // matter. This listener's only job is to catch that moment; it
+      // doesn't do any of the section geometry work itself.
+      window.addEventListener("scroll", handleScroll, { passive: true });
+      // Modern browsers fire this once a (possibly smooth) scroll settles.
+      window.addEventListener("scrollend", clearPending);
+    };
+    const stopTracking = () => {
+      observer?.disconnect();
+      observer = undefined;
       window.removeEventListener("scroll", handleScroll);
       window.removeEventListener("scrollend", clearPending);
+    };
+
+    // This nav is hidden entirely below the mobile breakpoint (see
+    // page.module.css), so there's nothing for the tracking above to
+    // drive there. Watching 3 elements and one scroll listener is cheap,
+    // but it's not free, and it's pure waste competing for main-thread
+    // time on a phone mid-scroll for a nav the user can't even see. Only
+    // run it above the breakpoint, toggling live across resizes and
+    // orientation changes.
+    const mobile = window.matchMedia("(max-width: 720px)");
+    if (!mobile.matches) startTracking();
+    const handleBreakpointChange = (e: MediaQueryListEvent) => {
+      if (e.matches) stopTracking();
+      else startTracking();
+    };
+    mobile.addEventListener("change", handleBreakpointChange);
+
+    return () => {
+      mobile.removeEventListener("change", handleBreakpointChange);
+      stopTracking();
       if (pendingTimeoutRef.current) clearTimeout(pendingTimeoutRef.current);
     };
   }, []);

@@ -196,21 +196,45 @@ export default function Seascape() {
   const containerRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
-    const container = containerRef.current
-    if (!container) return
+    const el = containerRef.current
+    if (!el) return
+    const container = el
 
     let instance: P5 | undefined
+    let visibilityObserver: IntersectionObserver | undefined
 
     import('p5').then(({ default: P5 }) => {
       instance = new P5((p: P5) => {
         let sea: P5.Shader
+        let canvasEl: HTMLCanvasElement
+
+        // The raymarched shader's cost scales with pixel count, and phone
+        // GPUs have a fraction of the headroom a laptop/desktop does. Below
+        // the mobile breakpoint, render at a lower internal resolution and
+        // let the canvas's own CSS size (100% of the container, set in
+        // Seascape.module.css) stretch it back up. The softening is minor
+        // on a moving, painterly ocean texture; the cost saving is not.
+        const renderScale = () => (window.innerWidth <= 720 ? 0.6 : 1)
+
+        function sizeCanvas() {
+          const rect = container.getBoundingClientRect()
+          const cssW = Math.round(rect.width)
+          const cssH = rect.height > 0 ? Math.round(rect.height) : Math.round(cssW * 3 / 2)
+          const scale = renderScale()
+          return { cssW, cssH, W: Math.round(cssW * scale), H: Math.round(cssH * scale) }
+        }
 
         p.setup = () => {
           p.pixelDensity(1)
-          const rect = container.getBoundingClientRect()
-          const W = Math.round(rect.width)
-          const H = rect.height > 0 ? Math.round(rect.height) : Math.round(W * 3 / 2)
-          p.createCanvas(W, H, p.WEBGL)
+          // Cap the frame rate: this animation is slow-moving water, not
+          // something that needs 60fps, and halving the update rate
+          // roughly halves the GPU work competing with scroll compositing.
+          p.frameRate(30)
+          const { cssW, cssH, W, H } = sizeCanvas()
+          const renderer = p.createCanvas(W, H, p.WEBGL)
+          canvasEl = renderer.elt
+          canvasEl.style.width = `${cssW}px`
+          canvasEl.style.height = `${cssH}px`
           p.rectMode(p.CENTER)
           p.noStroke()
           sea = p.createShader(VERT, FRAG)
@@ -227,15 +251,33 @@ export default function Seascape() {
         // breakpoints and on mobile orientation change, so keep the canvas
         // in sync instead of leaving it stretched at its mount-time size.
         p.windowResized = () => {
-          const rect = container.getBoundingClientRect()
-          const W = Math.round(rect.width)
-          const H = rect.height > 0 ? Math.round(rect.height) : Math.round(W * 3 / 2)
+          const { cssW, cssH, W, H } = sizeCanvas()
           p.resizeCanvas(W, H)
+          canvasEl.style.width = `${cssW}px`
+          canvasEl.style.height = `${cssH}px`
         }
       }, container)
+
+      // Rendering a full-screen raymarched shader while it's scrolled
+      // completely out of view is pure waste, and on mobile (where the
+      // painting isn't sticky, so it scrolls away as soon as you read past
+      // it) that's most of the time you're scrolling. Pause the p5 draw
+      // loop entirely when offscreen instead of leaving it running.
+      visibilityObserver = new IntersectionObserver(
+        ([entry]) => {
+          if (!instance) return
+          if (entry.isIntersecting) instance.loop()
+          else instance.noLoop()
+        },
+        { threshold: 0 },
+      )
+      visibilityObserver.observe(container)
     })
 
-    return () => instance?.remove()
+    return () => {
+      instance?.remove()
+      visibilityObserver?.disconnect()
+    }
   }, [])
 
   return <div ref={containerRef} className={styles.container} />
