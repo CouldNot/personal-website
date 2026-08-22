@@ -91,8 +91,9 @@ export default function Home() {
             >
               a puzzle game
             </a>{" "}
-            that grew to over 200k users and various contributions to open
-            source projects I love (although I no longer use Arch, btw 🤓).
+            that reached more than 200,000 users, contributed to a few
+            open-source projects, and briefly become the kind of person who uses
+            Arch, btw.
           </p>
           <p>
             Recently, I&apos;ve been working on{" "}
