@@ -81,8 +81,9 @@ export default function Home() {
               className={styles.aboutLink}
             >
               Scratch
-            </a>
-            . I&apos;ve made a lot of other things since then, like{" "}
+            </a>{" "}
+            at eight years old. I&apos;ve made a lot of other things since then,
+            like{" "}
             <a
               href="https://github.com/CouldNot/brawldle"
               target="_blank"
@@ -93,7 +94,7 @@ export default function Home() {
             </a>{" "}
             that reached more than 200,000 users, contributed to a few
             open-source projects, and briefly become the kind of person who uses
-            Arch, btw.
+            Arch, btw 🤓.
           </p>
           <p>
             Recently, I&apos;ve been working on{" "}
