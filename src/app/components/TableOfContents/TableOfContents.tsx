@@ -15,8 +15,9 @@ export default function TableOfContents() {
   const rowRefs = useRef<(HTMLAnchorElement | null)[]>([]);
   const [slashTop, setSlashTop] = useState<number | null>(null);
   // Set while a click-triggered smooth scroll is in flight, so the
-  // scroll listener doesn't recompute "active" from the stale scroll
-  // position mid-flight and flash back to the previous item.
+  // intersection tracking below doesn't recompute "active" from a section
+  // the scroll is only passing through and flash the slash back before it
+  // reaches the clicked target.
   const pendingRef = useRef<string | null>(null);
   const pendingTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -32,60 +33,94 @@ export default function TableOfContents() {
   }, [active]);
 
   useEffect(() => {
-    const updateActive = () => {
+    // A section is "active" once it crosses a thin reading line near the
+    // top of the viewport. IntersectionObserver reports this directly from
+    // real element geometry, so there's no scroll listener, no rAF
+    // throttling, and no magic pixel threshold to keep in sync by hand.
+    const isIntersecting = new Map<string, boolean>();
+
+    // Only tracks organic scrolling. A click already knows its target and
+    // sets `active` directly (see below), bypassing this entirely. That
+    // split matters: a short trailing section can sit low enough on the
+    // page that its top never nears the reading line no matter how far you
+    // scroll, so geometry alone can't always tell "the user is looking at
+    // the last section" apart from "the user clicked an earlier section
+    // that happens to leave little further to scroll". Once we've hit the
+    // bottom of the page with no click in flight, there's no such
+    // ambiguity: the last section is unambiguously what's being read.
+    const pickActive = () => {
+      if (pendingRef.current) return;
+
       const atBottom =
         window.innerHeight + window.scrollY >=
         document.documentElement.scrollHeight - 2;
-
       if (atBottom) {
         setActive(sections[sections.length - 1].id);
         return;
       }
 
-      let current = sections[0].id;
-      for (const { id } of sections) {
-        const el = document.getElementById(id);
-        if (el && el.getBoundingClientRect().top <= 200) {
-          current = id;
-        }
+      const onScreen = sections.filter(({ id }) => isIntersecting.get(id));
+      if (onScreen.length > 0) {
+        // Normally only one section overlaps the thin band at a time; if
+        // more than one briefly does (fast scroll), prefer the topmost.
+        const topmost = onScreen.reduce((a, b) => {
+          const aTop = document.getElementById(a.id)?.getBoundingClientRect().top ?? Infinity;
+          const bTop = document.getElementById(b.id)?.getBoundingClientRect().top ?? Infinity;
+          return aTop <= bTop ? a : b;
+        });
+        setActive(topmost.id);
       }
-      setActive(current);
     };
 
-    // Scroll fires far more often than the browser repaints, so reading
-    // layout (getBoundingClientRect) on every event causes forced reflows
-    // that fight with the slash's transform transition and show up as
-    // stutter. Coalesce to at most once per animation frame instead.
+    const observer = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          isIntersecting.set(entry.target.id, entry.isIntersecting);
+        }
+        pickActive();
+      },
+      // Shrink the viewport to a band from 15% to 30% down from the top.
+      { rootMargin: "-15% 0px -70% 0px", threshold: 0 },
+    );
+
+    sections.forEach(({ id }) => {
+      const el = document.getElementById(id);
+      if (el) observer.observe(el);
+    });
+
+    // IntersectionObserver only calls back when a section's intersection
+    // state *changes*. Scrolling the last few pixels to the true bottom of
+    // the page usually doesn't change any section's state (it was already
+    // the only one crossing the reading line), so nothing would otherwise
+    // re-run the atBottom check above right when it starts to matter. This
+    // listener's only job is to catch that moment; it doesn't do any of
+    // the section geometry work itself.
     let ticking = false;
     const handleScroll = () => {
-      // A click already knows its target; don't let the stale scroll
-      // position (read mid-animation) recompute a different "active"
-      // and flash the slash back before the scroll catches up.
-      if (pendingRef.current) return;
       if (ticking) return;
       ticking = true;
       requestAnimationFrame(() => {
-        updateActive();
+        pickActive();
         ticking = false;
       });
     };
+    window.addEventListener("scroll", handleScroll, { passive: true });
 
     const clearPending = () => {
       if (pendingTimeoutRef.current) {
         clearTimeout(pendingTimeoutRef.current);
         pendingTimeoutRef.current = null;
       }
-      if (pendingRef.current) {
-        pendingRef.current = null;
-        updateActive();
-      }
+      // Just hand tracking back to scroll-driven detection. Don't
+      // recompute here: the section that was clicked stays active, which
+      // is the whole point of the split above.
+      pendingRef.current = null;
     };
-
-    updateActive();
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    // Modern browsers fire this once the (possibly smooth) scroll settles.
+    // Modern browsers fire this once a (possibly smooth) scroll settles.
     window.addEventListener("scrollend", clearPending);
+
     return () => {
+      observer.disconnect();
       window.removeEventListener("scroll", handleScroll);
       window.removeEventListener("scrollend", clearPending);
       if (pendingTimeoutRef.current) clearTimeout(pendingTimeoutRef.current);

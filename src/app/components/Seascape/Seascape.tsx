@@ -222,6 +222,16 @@ export default function Seascape() {
           sea.setUniform('time', p.millis() / 200)
           p.rect(0, 0, p.width, p.height)
         }
+
+        // The sidebar's width (and painting aspect ratio) shifts between
+        // breakpoints and on mobile orientation change, so keep the canvas
+        // in sync instead of leaving it stretched at its mount-time size.
+        p.windowResized = () => {
+          const rect = container.getBoundingClientRect()
+          const W = Math.round(rect.width)
+          const H = rect.height > 0 ? Math.round(rect.height) : Math.round(W * 3 / 2)
+          p.resizeCanvas(W, H)
+        }
       }, container)
     })
 

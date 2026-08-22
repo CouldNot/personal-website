@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import "./globals.css";
 import localFont from "next/font/local";
 import styles from "./layout.module.css";
@@ -47,7 +47,19 @@ const grotesk = localFont({
 
 export const metadata: Metadata = {
   title: "Dale Dai",
-  description: "Description",
+  description: "Personal site of Dale Dai.",
+  appleWebApp: {
+    capable: true,
+    title: "Dale Dai",
+    statusBarStyle: "default",
+  },
+};
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  viewportFit: "cover",
+  themeColor: "#fefef4",
 };
 
 export default function RootLayout({

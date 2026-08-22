@@ -54,7 +54,18 @@
 .icon {
   height: 50px;
   width: 50px;
-  border-radius: 20%;
   object-fit: contain;
+  border-radius: 20%;
   flex-shrink: 0;
+}
+
+@media (max-width: 720px) {
+  .titleRow {
+    flex-direction: column;
+    gap: var(--spacing-xs);
+  }
+
+  .titleSet {
+    flex-wrap: wrap;
+  }
 }

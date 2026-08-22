@@ -5,7 +5,7 @@ interface ExperienceCardProps {
   company: string;
   dateRange: string;
   role: string;
-  icon?: StaticImageData;
+  icon?: StaticImageData | string;
 }
 
 export default function ExperienceCard({
@@ -17,7 +17,12 @@ export default function ExperienceCard({
   return (
     <div className={styles.layout}>
       {icon ? (
-        <Image src={icon} alt="" className={styles.icon} />
+        typeof icon === "string" ? (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img src={icon} alt="" className={styles.icon} />
+        ) : (
+          <Image src={icon} alt="" className={styles.icon} />
+        )
       ) : (
         <div className={styles.placeholderIcon}></div>
       )}

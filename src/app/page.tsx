@@ -1,9 +1,9 @@
-import { Icon } from "@iconify/react";
 import styles from "./page.module.css";
 import ProjectCard from "./components/ProjectCard/ProjectCard";
 import ExperienceCard from "./components/ExperienceCard/ExperienceCard";
 import Seascape from "./components/Seascape/Seascape";
 import TableOfContents from "./components/TableOfContents/TableOfContents";
+import ArrowUpRight from "./components/ArrowUpRight/ArrowUpRight";
 import beaconIcon from "./assets/icons/beacon.png";
 import brawldleIcon from "./assets/icons/brawldle.png";
 import gitIcon from "./assets/icons/git.png";
@@ -26,7 +26,7 @@ export default function Home() {
             rel="noopener noreferrer"
             className={styles.link}
           >
-            github <Icon icon="ph:arrow-up-right" />
+            github <ArrowUpRight />
           </a>
           <a
             href="https://www.linkedin.com/in/dale-dai"
@@ -34,7 +34,7 @@ export default function Home() {
             rel="noopener noreferrer"
             className={styles.link}
           >
-            linkedin <Icon icon="ph:arrow-up-right" />
+            linkedin <ArrowUpRight />
           </a>
           <a
             href="/Dale_Dai.pdf"
@@ -42,7 +42,7 @@ export default function Home() {
             rel="noopener noreferrer"
             className={styles.link}
           >
-            cv <Icon icon="ph:arrow-up-right" />
+            cv <ArrowUpRight />
           </a>
           <a
             href="https://www.goodreads.com/user/show/156001052-dale-dai"
@@ -50,7 +50,7 @@ export default function Home() {
             rel="noopener noreferrer"
             className={styles.link}
           >
-            goodreads <Icon icon="ph:arrow-up-right" />
+            goodreads <ArrowUpRight />
           </a>
         </nav>
       </aside>
@@ -159,6 +159,7 @@ export default function Home() {
                 company: "Trackside",
                 dateRange: "Jul 2026 - Present",
                 role: "Co-Founder",
+                icon: "/icons/trackside.svg",
               },
               {
                 company: "The Algorithms, Nikola, Matplotlib",
@@ -179,9 +180,19 @@ export default function Home() {
         </section>
 
         <footer className={styles.footer}>
-          <span>dale dai</span>
-          <span>built with next.js</span>
-          <span>2026</span>
+          <p>
+            The water in the sidebar is a live GPU simulation published by{" "}
+            <a
+              href="https://www.shadertoy.com/user/TDM"
+              target="_blank"
+              rel="noopener noreferrer"
+              className={styles.aboutLink}
+            >
+              TDM
+            </a>{" "}
+            in 2014.
+          </p>
+          <p>Built with Next.js in SoCal ☀️</p>
         </footer>
       </main>
     </div>

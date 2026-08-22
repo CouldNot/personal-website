@@ -3,4 +3,13 @@
   max-width: var(--max-width);
   margin: 0 auto;
   padding: 0 var(--spacing-lg);
+  padding-left: max(var(--spacing-lg), env(safe-area-inset-left));
+  padding-right: max(var(--spacing-lg), env(safe-area-inset-right));
+}
+
+@media (max-width: 720px) {
+  .container {
+    padding-left: max(var(--spacing-md), env(safe-area-inset-left));
+    padding-right: max(var(--spacing-md), env(safe-area-inset-right));
+  }
 }

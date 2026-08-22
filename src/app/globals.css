@@ -17,6 +17,8 @@ video {
 
 html {
   scroll-padding-top: var(--spacing-xl);
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
 }
 
 body {
@@ -25,6 +27,7 @@ body {
   background-color: var(--color-bg);
   color: var(--color-text);
   font-family: var(--font-grotesk), sans-serif;
+  -webkit-tap-highlight-color: transparent;
 }
 
 :root {
