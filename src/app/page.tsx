@@ -4,6 +4,10 @@ import ProjectCard from "./components/ProjectCard/ProjectCard";
 import ExperienceCard from "./components/ExperienceCard/ExperienceCard";
 import Seascape from "./components/Seascape/Seascape";
 import TableOfContents from "./components/TableOfContents/TableOfContents";
+import beaconIcon from "./assets/icons/beacon.png";
+import brawldleIcon from "./assets/icons/brawldle.png";
+import gitIcon from "./assets/icons/git.png";
+import millenniumStemIcon from "./assets/icons/millenium_stem.png";
 
 export default function Home() {
   return (
@@ -17,7 +21,7 @@ export default function Home() {
 
         <nav className={styles.links}>
           <a
-            href="https://github.com/couldnot"
+            href="https://github.com/CouldNot"
             target="_blank"
             rel="noopener noreferrer"
             className={styles.link}
@@ -33,7 +37,7 @@ export default function Home() {
             linkedin <Icon icon="ph:arrow-up-right" />
           </a>
           <a
-            href="https://google.com"
+            href="/Dale_Dai.pdf"
             target="_blank"
             rel="noopener noreferrer"
             className={styles.link}
@@ -56,27 +60,51 @@ export default function Home() {
 
         <section id="about" className={styles.about}>
           <p>
-            Lorem ipsum dolor sit amet consectetur adipiscing elit. Quisque
-            faucibus ex sapien vitae pellentesque sem placerat. In id cursus mi
-            pretium tellus duis convallis. Tempus leo eu aenean sed diam urna
-            tempor. Pulvinar vivamus fringilla lacus nec metus bibendum egestas.
-            Iaculis massa nisl malesuada lacinia integer nunc posuere. Ut
-            hendrerit semper vel class aptent taciti sociosqu. Ad litora
-            torquent per conubia nostra inceptos himenaeos.
+            Hi, I&apos;m Dale. I&apos;m a Computer Science student at the{" "}
+            <a
+              href="https://www.usc.edu"
+              target="_blank"
+              rel="noopener noreferrer"
+              className={styles.aboutLink}
+            >
+              University of Southern California
+            </a>{" "}
+            and I like to tinker with product, engineering, and everything in
+            between.
           </p>
           <p>
-            Phasellus tristique dui ut ligula pharetra, nec bibendum diam
-            gravida. Sed euismod felis vel velit varius, ut faucibus odio
-            dignissim. Donec malesuada eros et eros tincidunt, vel tincidunt
-            lectus tincidunt. Proin vestibulum, lorem nec dictum posuere, lorem
-            eros tincidunt turpis, nec bibendum diam gravida nec eros.
+            My love of software began with making animations on{" "}
+            <a
+              href="https://scratch.mit.edu"
+              target="_blank"
+              rel="noopener noreferrer"
+              className={styles.aboutLink}
+            >
+              Scratch
+            </a>
+            . I&apos;ve made a lot of other things since then, like{" "}
+            <a
+              href="https://github.com/CouldNot/brawldle"
+              target="_blank"
+              rel="noopener noreferrer"
+              className={styles.aboutLink}
+            >
+              a puzzle game
+            </a>{" "}
+            that grew to over 200k users and various contributions to open
+            source projects I love (although I no longer use Arch, btw 🤓).
           </p>
           <p>
-            Vestibulum ante ipsum primis in faucibus orci luctus et ultrices
-            posuere cubilia curae; Curabitur euismod, nisi vel consectetur
-            tincidunt, nisi nisi aliquam eros, nec bibendum diam gravida nec
-            eros. Sed euismod felis vel velit varius, ut faucibus odio
-            dignissim.
+            Recently, I&apos;ve been working on{" "}
+            <a
+              href="https://tracksideracing.app"
+              target="_blank"
+              rel="noopener noreferrer"
+              className={styles.aboutLink}
+            >
+              Trackside
+            </a>
+            , a social motorsports app for live races.
           </p>
           <p className={styles.email}>hi@daled.ai</p>
         </section>
@@ -85,32 +113,38 @@ export default function Home() {
           <div className={styles.projectContainer}>
             {[
               {
-                name: "OpenClaw",
-                href: "https://google.com",
-                description: "Personal AI Assistant",
+                name: "Trackside",
+                href: "https://tracksideracing.app",
+                description:
+                  "Motorsport app for live race tracking and predictions",
                 year: 2026,
-                bullets: ["lorem ipsum", "lorem ipsum"],
+                bullets: [
+                  "Cross-platform mobile app (React Native/Expo)",
+                  "Beta waitlist with 500+ registered testers",
+                ],
+                icon: "/icons/trackside.svg",
               },
               {
-                name: "OpenClaw",
-                href: "https://google.com",
-                description: "Personal AI Assistant",
+                name: "Brawldle.io",
+                href: "https://brawldle.io",
+                description: "Daily puzzle site (acquired in 2026)",
                 year: 2026,
-                bullets: ["lorem ipsum", "lorem ipsum"],
+                bullets: [
+                  "Reached 200K+ users and 500k+ plays across 150+ countries",
+                  "Developed and designed in HTML/CSS/JS",
+                ],
+                icon: brawldleIcon,
               },
               {
-                name: "OpenClaw",
-                href: "https://google.com",
-                description: "Personal AI Assistant",
+                name: "Beacon",
+                href: "https://github.com/CouldNot/beacon",
+                description: "Multi-protocol proxy client for macOS",
                 year: 2026,
-                bullets: ["lorem ipsum", "lorem ipsum"],
-              },
-              {
-                name: "OpenClaw",
-                href: "https://google.com",
-                description: "Personal AI Assistant",
-                year: 2026,
-                bullets: ["lorem ipsum", "lorem ipsum"],
+                bullets: [
+                  "Native SwiftUI on top of Xray-core and sing-box",
+                  "Routing, subscriptions, and live connection monitoring",
+                ],
+                icon: beaconIcon,
               },
             ].map((project, i) => (
               <ProjectCard key={i} {...project} />
@@ -122,24 +156,21 @@ export default function Home() {
           <div className={styles.experienceContainer}>
             {[
               {
-                company: "Apple",
-                dateRange: "May 2025 — Present",
-                role: "Software Engineer",
+                company: "Trackside",
+                dateRange: "Jul 2026 - Present",
+                role: "Co-Founder",
               },
               {
-                company: "Apple",
-                dateRange: "May 2025 — Present",
-                role: "Software Engineer",
+                company: "The Algorithms, Nikola, Matplotlib",
+                dateRange: "2022 - 2026",
+                role: "Open-Source Contributor",
+                icon: gitIcon,
               },
               {
-                company: "Apple",
-                dateRange: "May 2025 — Present",
-                role: "Software Engineer",
-              },
-              {
-                company: "Apple",
-                dateRange: "May 2025 — Present",
-                role: "Software Engineer",
+                company: "Millennium STEM BC",
+                dateRange: "Feb 2024 - Jan 2025",
+                role: "Director of IT",
+                icon: millenniumStemIcon,
               },
             ].map((experience, i) => (
               <ExperienceCard key={i} {...experience} />

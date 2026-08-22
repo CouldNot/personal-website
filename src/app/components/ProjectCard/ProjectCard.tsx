@@ -1,3 +1,4 @@
+import Image, { type StaticImageData } from "next/image";
 import styles from "./ProjectCard.module.css";
 
 interface ProjectCardProps {
@@ -6,6 +7,10 @@ interface ProjectCardProps {
   description: string;
   year: number;
   bullets: string[];
+  // Raster icons (StaticImageData) go through next/image; SVGs are passed
+  // as a plain /public path string and rendered with a plain <img>, since
+  // next/image's optimizer requires extra config to serve SVGs safely.
+  icon?: StaticImageData | string;
 }
 
 export default function ProjectCard({
@@ -14,10 +19,20 @@ export default function ProjectCard({
   description,
   year,
   bullets,
+  icon,
 }: ProjectCardProps) {
   return (
     <div className={styles.layout}>
-      <div className={styles.placeholderIcon}></div>
+      {icon ? (
+        typeof icon === "string" ? (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img src={icon} alt="" className={styles.icon} />
+        ) : (
+          <Image src={icon} alt="" className={styles.icon} />
+        )
+      ) : (
+        <div className={styles.placeholderIcon}></div>
+      )}
       <div className={styles.infoStack}>
         <div className={styles.titleRow}>
           <div className={styles.titleSet}>

@@ -37,3 +37,11 @@
   background-color: var(--color-muted);
   border-radius: 50%;
 }
+
+.icon {
+  height: 50px;
+  width: 50px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  object-fit: cover;
+}

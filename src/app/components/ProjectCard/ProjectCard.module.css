@@ -50,3 +50,11 @@
   border-radius: 20%;
   flex-shrink: 0;
 }
+
+.icon {
+  height: 50px;
+  width: 50px;
+  border-radius: 20%;
+  object-fit: contain;
+  flex-shrink: 0;
+}

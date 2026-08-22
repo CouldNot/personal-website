@@ -116,6 +116,17 @@
   font-size: var(--text-md);
 }
 
+.about p + p {
+  margin-top: var(--spacing-md);
+}
+
+.aboutLink {
+  text-decoration: underline dotted;
+  text-decoration-thickness: 0.1em;
+  text-underline-offset: 0.25em;
+  color: var(--color-text);
+}
+
 .projects {
   margin-top: var(--spacing-xl);
 }
