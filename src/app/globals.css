@@ -1,5 +1,6 @@
 :root {
   color-scheme: light;
+  background: #f3f1e8;
 }
 
 * {
@@ -24,13 +25,13 @@ body {
   position: relative;
   display: grid;
   justify-self: center;
-  width: min(100vw, 146.771dvh);
-  height: min(100dvh, 68.133vw);
+  width: 60vw;
+  aspect-ratio: 3000 / 2044;
 }
 
 .water-ripple {
   grid-area: 1 / 1;
   width: 100%;
   height: 100%;
-  background: url("/media/yoshida_hiroshi-q98.webp") center / contain no-repeat;
+  background: url("/media/yoshida_hiroshi-paper-q98.webp") center / contain no-repeat;
 }

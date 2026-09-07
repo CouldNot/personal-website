@@ -12,7 +12,7 @@ type RippleInstance = {
   };
 };
 
-const artwork = "/media/yoshida_hiroshi-q98.webp";
+const artwork = "/media/yoshida_hiroshi-paper-q98.webp";
 const waterMask = "/media/mask.png";
 
 export default function WaterRipple() {
