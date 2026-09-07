@@ -22,6 +22,14 @@ type GlslCanvasConstructor = new (canvas: HTMLCanvasElement) => GlslCanvasInstan
 const artwork = "/media/yoshida_hiroshi-paper-q98.webp";
 const waterMask = "/media/mask.png";
 const waterNormal = "/media/water-normal.png";
+const normalWater = {
+  animationSpeed: 0.2,
+  direction: (120 * Math.PI) / 180,
+  ratio: 1,
+  scale: 6,
+  scrollSpeed: 0.15,
+  strength: 0.1,
+};
 
 const vertexShader = `
   uniform vec2 g_Texture0Resolution;
@@ -33,7 +41,7 @@ const vertexShader = `
   varying vec4 v_ripple_coord;
 
   uniform float g_Time;
-  uniform float g_AnimationSpeed;
+  uniform float g_RipplePhase;
   uniform float g_Scale;
   uniform float g_ScrollSpeed;
   uniform float g_Direction;
@@ -54,9 +62,9 @@ const vertexShader = `
       * g_ScrollSpeed * g_ScrollSpeed * g_Time;
 
     v_ripple_coord.xy = a_texcoord
-      + g_Time * g_AnimationSpeed * g_AnimationSpeed + scroll;
+      + g_RipplePhase + scroll;
     v_ripple_coord.zw = secondaryCoordinates
-      - g_Time * g_AnimationSpeed * g_AnimationSpeed + scroll;
+      - g_RipplePhase + scroll;
     v_ripple_coord *= g_Scale;
 
     float textureRatio = g_Texture0Resolution.x / g_Texture0Resolution.y;
@@ -127,7 +135,9 @@ const fragmentShader = `
 export default function WaterRipple() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const togglePaintingRef = useRef<() => void>(() => {});
+  const toggleStillnessRef = useRef<() => void>(() => {});
   const [aboutOpen, setAboutOpen] = useState(false);
+  const [waterStill, setWaterStill] = useState(false);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -140,7 +150,14 @@ export default function WaterRipple() {
     let isReady = false;
     let isTransitioning = false;
     let isDissolved = false;
-    let waterTime = 0;
+    let isWaterStill = false;
+    let motionFactor = 1;
+    let motionFactorFrom = 1;
+    let motionFactorTo = 1;
+    let motionTransitionStartedAt = 0;
+    let motionIsTransitioning = false;
+    let ripplePhase = 0;
+    let scrollPhase = 0;
     let dissolveProgress = 0;
     let dissolveFrom = 0;
     let dissolveTo = 0;
@@ -149,11 +166,6 @@ export default function WaterRipple() {
 
     const render = (now: number) => {
       if (disposed || !glsl) return;
-
-      if (previousTimestamp !== undefined) {
-        waterTime += Math.min(now - previousTimestamp, 50) * 0.0003;
-      }
-      previousTimestamp = now;
 
       if (isTransitioning) {
         const linearProgress = Math.min((now - transitionStartedAt) / 2000, 1);
@@ -167,8 +179,30 @@ export default function WaterRipple() {
         }
       }
 
-      glsl.setUniform("g_Time", waterTime);
+      if (motionIsTransitioning) {
+        const linearProgress = Math.min((now - motionTransitionStartedAt) / 1600, 1);
+        const easedProgress = linearProgress * linearProgress * (3 - 2 * linearProgress);
+        motionFactor = motionFactorFrom + (motionFactorTo - motionFactorFrom) * easedProgress;
+
+        if (linearProgress === 1) {
+          motionFactor = motionFactorTo;
+          motionIsTransitioning = false;
+        }
+      }
+
+      if (previousTimestamp !== undefined) {
+        const elapsed = Math.min(now - previousTimestamp, 50);
+        const motion = motionFactor * motionFactor;
+        // Separate phases let speed change smoothly without a visual rewind.
+        ripplePhase += elapsed * 0.0003 * normalWater.animationSpeed ** 2 * motion;
+        scrollPhase += elapsed * 0.0003 * motion;
+      }
+      previousTimestamp = now;
+
+      glsl.setUniform("g_Time", scrollPhase);
+      glsl.setUniform("g_RipplePhase", ripplePhase);
       glsl.setUniform("u_progress", dissolveProgress);
+      glsl.setUniform("g_Strength", normalWater.strength * motionFactor);
       renderFrame = requestAnimationFrame(render);
     };
 
@@ -202,6 +236,15 @@ export default function WaterRipple() {
       setAboutOpen(dissolveTo === 1);
     };
 
+    toggleStillnessRef.current = () => {
+      motionFactorFrom = motionFactor;
+      motionFactorTo = isWaterStill ? 1 : 0;
+      motionTransitionStartedAt = performance.now();
+      motionIsTransitioning = true;
+      isWaterStill = !isWaterStill;
+      setWaterStill(isWaterStill);
+    };
+
     void import("glslCanvas")
       .then(({ default: GlslCanvas }: { default: GlslCanvasConstructor }) => {
         if (disposed) return;
@@ -211,13 +254,13 @@ export default function WaterRipple() {
         glsl.setUniform("g_Texture0", artwork);
         glsl.setUniform("g_Texture1", waterMask);
         glsl.setUniform("g_Texture2", waterNormal);
-        glsl.setUniform("g_AnimationSpeed", 0.2);
-        glsl.setUniform("g_ScrollSpeed", 0);
-        glsl.setUniform("g_Direction", 0);
-        glsl.setUniform("g_Ratio", 1);
-        glsl.setUniform("g_Scale", 5);
-        glsl.setUniform("g_Strength", 0.09);
+        glsl.setUniform("g_ScrollSpeed", normalWater.scrollSpeed);
+        glsl.setUniform("g_Direction", normalWater.direction);
+        glsl.setUniform("g_Ratio", normalWater.ratio);
+        glsl.setUniform("g_Scale", normalWater.scale);
+        glsl.setUniform("g_Strength", normalWater.strength);
         glsl.setUniform("g_Time", 0);
+        glsl.setUniform("g_RipplePhase", 0);
         glsl.setUniform("u_progress", 0);
         readinessFrame = requestAnimationFrame(waitForTextures);
       })
@@ -228,6 +271,7 @@ export default function WaterRipple() {
     return () => {
       disposed = true;
       togglePaintingRef.current = () => {};
+      toggleStillnessRef.current = () => {};
       if (renderFrame !== undefined) cancelAnimationFrame(renderFrame);
       if (readinessFrame !== undefined) cancelAnimationFrame(readinessFrame);
       glsl?.destroy();
@@ -237,28 +281,60 @@ export default function WaterRipple() {
   return (
     <div className="water-stage">
       <canvas ref={canvasRef} className="water-ripple" aria-label="Animated water scene" />
-      <p className="painting-text-slot">
-        <span>dale dai</span>
-        <span>
-          cs @{" "}
+      <div className="painting-text-slot">
+        <p className="painting-text-group">
+          <span>dale dai</span>
+          <span>
+            cs @{" "}
+            <a
+              className="text-link"
+              href="https://www.usc.edu/"
+              target="_blank"
+              rel="noreferrer"
+            >
+              usc
+            </a>
+          </span>
+          <button
+            className="about-toggle"
+            type="button"
+            aria-pressed={aboutOpen}
+            onClick={() => togglePaintingRef.current()}
+          >
+            {aboutOpen ? "[*] about me" : "[ ] about me"}
+          </button>
+          <button
+            className="about-toggle"
+            type="button"
+            aria-pressed={waterStill}
+            onClick={() => toggleStillnessRef.current()}
+          >
+            {waterStill ? "[*] hold still" : "[ ] hold still"}
+          </button>
+        </p>
+        <p className="painting-text-group painting-text-right">
           <a
-            className="usc-link"
-            href="https://www.usc.edu/"
+            className="text-link"
+            href="https://linkedin.com/in/dale-dai"
             target="_blank"
             rel="noreferrer"
           >
-            usc
+            linkedin
           </a>
-        </span>
-        <button
-          className="about-toggle"
-          type="button"
-          aria-pressed={aboutOpen}
-          onClick={() => togglePaintingRef.current()}
-        >
-          {aboutOpen ? "[*] about me" : "[ ] about me"}
-        </button>
-      </p>
+          <a
+            className="text-link"
+            href="https://github.com/CouldNot"
+            target="_blank"
+            rel="noreferrer"
+          >
+            github
+          </a>
+          <a className="text-link" href="#cv" title="CV coming soon">
+            cv
+          </a>
+          <span>hi@daled.ai</span>
+        </p>
+      </div>
     </div>
   );
 }
