@@ -71,5 +71,9 @@ export default function WaterRipple() {
     };
   }, []);
 
-  return <canvas ref={canvasRef} className="water-ripple" aria-label="Animated water scene" />;
+  return (
+    <div className="water-stage">
+      <canvas ref={canvasRef} className="water-ripple" aria-label="Animated water scene" />
+    </div>
+  );
 }
