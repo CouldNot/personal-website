@@ -27,11 +27,58 @@ body {
   justify-self: center;
   width: 60vw;
   aspect-ratio: 3000 / 2044;
+  background: url("/media/yoshida_hiroshi-paper-q98.webp") center / contain no-repeat;
+  transform: translateY(-7vh);
 }
 
 .water-ripple {
   grid-area: 1 / 1;
   width: 100%;
   height: 100%;
-  background: url("/media/yoshida_hiroshi-paper-q98.webp") center / contain no-repeat;
+  visibility: hidden;
+}
+
+.water-ripple.is-ready {
+  visibility: visible;
+}
+
+.painting-text-slot {
+  position: absolute;
+  top: calc(100% + clamp(0.2rem, 0.4vw, 0.4rem));
+  left: 50%;
+  display: flex;
+  align-items: baseline;
+  gap: 2.4em;
+  margin: 0;
+  width: 96%;
+  min-height: clamp(2.25rem, 3vw, 3.25rem);
+  color: #111;
+  font-family: var(--font-monaspace-xenon), monospace;
+  font-size: clamp(0.67rem, 0.89vw, 0.85rem);
+  font-weight: 400;
+  letter-spacing: normal;
+  line-height: 1.3;
+  white-space: nowrap;
+  transform: translateX(-50%);
+}
+
+.about-toggle {
+  appearance: none;
+  padding: 0;
+  border: 0;
+  color: inherit;
+  background: transparent;
+  font: inherit;
+  cursor: pointer;
+}
+
+.usc-link {
+  color: inherit;
+  text-underline-offset: 0.16em;
+}
+
+.about-toggle:focus-visible,
+.usc-link:focus-visible {
+  outline: 1px solid currentColor;
+  outline-offset: 0.22em;
 }
