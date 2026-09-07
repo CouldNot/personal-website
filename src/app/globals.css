@@ -1,67 +1,27 @@
-*,
-*::before,
-*::after {
-  box-sizing: border-box;
+:root {
+  color-scheme: light;
 }
 
 * {
+  box-sizing: border-box;
+}
+
+html,
+body {
   margin: 0;
-  padding: 0;
-}
-
-img,
-video {
-  max-width: 100%;
-  height: auto;
-}
-
-html {
-  scroll-padding-top: var(--spacing-xl);
-  -webkit-text-size-adjust: 100%;
-  text-size-adjust: 100%;
-}
-
-/* A lightweight crossfade between the main site and the /roombarat page
-   (linked as a plain <a>, not next/link, so navigation is a real page load
-   and this native browser transition actually applies). Degrades to an
-   instant swap on browsers without support, no fallback needed. */
-@view-transition {
-  navigation: auto;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  ::view-transition-group(*),
-  ::view-transition-old(*),
-  ::view-transition-new(*) {
-    animation: none !important;
-  }
+  width: 100%;
+  min-height: 100%;
+  overflow: hidden;
 }
 
 body {
-  line-height: 1.5;
-  -webkit-font-smoothing: antialiased;
-  background-color: var(--color-bg);
-  color: var(--color-text);
-  font-family: var(--font-grotesk), sans-serif;
-  -webkit-tap-highlight-color: transparent;
+  height: 100dvh;
+  display: grid;
+  place-items: center;
 }
 
-:root {
-  --color-bg: #fefef4;
-  --color-text: #1a1a1a;
-  --color-muted: #7c7c7c;
-  --font-serif: var(--font-caslon), Georgia, serif;
-  --font-sans: var(--font-grotesk), sans-serif;
-  --text-sm: 0.875rem;
-  --text-md: 1rem;
-  --text-lg: 1.25rem;
-  --text-xl: 2rem;
-  --text-2xl: 3rem;
-  --spacing-xs: 0.25rem;
-  --spacing-sm: 0.5rem;
-  --spacing-md: 1.125rem;
-  --spacing-lg: 2rem;
-  --spacing-xl: 4rem;
-  --spacing-2xl: 6rem;
-  --max-width: 960px;
+.water-ripple {
+  width: min(100vw, 146.771dvh);
+  height: min(100dvh, 68.133vw);
+  background: url("/media/yoshida_hiroshi-q98.webp") center / contain no-repeat;
 }
