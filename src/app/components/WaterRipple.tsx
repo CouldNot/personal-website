@@ -291,24 +291,24 @@ export default function WaterRipple() {
       <canvas ref={canvasRef} className="water-ripple" aria-label="Animated water scene" />
       <div
         className={aboutOpen ? "about-panel is-visible" : "about-panel"}
-        aria-hidden={!aboutOpen}
+        inert={!aboutOpen}
       >
         <p>about me</p>
+        <p>
+          cs @{" "}
+          <a
+            className="text-link"
+            href="https://www.usc.edu/"
+            target="_blank"
+            rel="noreferrer"
+          >
+            usc
+          </a>
+        </p>
       </div>
       <div className="painting-text-slot">
         <p className="painting-text-group">
           <span>dale dai</span>
-          <span>
-            cs @{" "}
-            <a
-              className="text-link"
-              href="https://www.usc.edu/"
-              target="_blank"
-              rel="noreferrer"
-            >
-              usc
-            </a>
-          </span>
           <button
             className="about-toggle"
             type="button"
@@ -321,11 +321,11 @@ export default function WaterRipple() {
           <button
             className="about-toggle"
             type="button"
-            aria-pressed={waterStill}
+            aria-pressed={!waterStill}
             disabled={stillnessBusy}
             onClick={() => toggleStillnessRef.current()}
           >
-            {waterStill ? "[*] hold still" : "[ ] hold still"}
+            {waterStill ? "[ ] go with the flow" : "[*] go with the flow"}
           </button>
         </p>
         <p className="painting-text-group painting-text-right">
