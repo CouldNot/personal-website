@@ -20,14 +20,14 @@ type GlslCanvasInstance = {
 type GlslCanvasConstructor = new (canvas: HTMLCanvasElement) => GlslCanvasInstance;
 
 const artwork = "/media/yoshida_hiroshi-paper-q98.webp";
-const waterMask = "/media/mask.png";
+const waterMask = "/media/image_mask.png";
 const waterNormal = "/media/water-normal.png";
 const normalWater = {
-  animationSpeed: 0.2,
+  animationSpeed: 0.25,
   direction: (120 * Math.PI) / 180,
   ratio: 1,
-  scale: 6,
-  scrollSpeed: 0.25,
+  scale: 5,
+  scrollSpeed: 0.2,
   strength: 0.1,
 };
 
