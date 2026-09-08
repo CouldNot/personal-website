@@ -27,7 +27,7 @@ const normalWater = {
   direction: (120 * Math.PI) / 180,
   ratio: 1,
   scale: 6,
-  scrollSpeed: 0.15,
+  scrollSpeed: 0.25,
   strength: 0.1,
 };
 
@@ -137,7 +137,9 @@ export default function WaterRipple() {
   const togglePaintingRef = useRef<() => void>(() => {});
   const toggleStillnessRef = useRef<() => void>(() => {});
   const [aboutOpen, setAboutOpen] = useState(false);
+  const [aboutBusy, setAboutBusy] = useState(false);
   const [waterStill, setWaterStill] = useState(false);
+  const [stillnessBusy, setStillnessBusy] = useState(false);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -176,6 +178,7 @@ export default function WaterRipple() {
           dissolveProgress = dissolveTo;
           isDissolved = dissolveTo === 1;
           isTransitioning = false;
+          setAboutBusy(false);
         }
       }
 
@@ -187,6 +190,7 @@ export default function WaterRipple() {
         if (linearProgress === 1) {
           motionFactor = motionFactorTo;
           motionIsTransitioning = false;
+          setStillnessBusy(false);
         }
       }
 
@@ -234,15 +238,19 @@ export default function WaterRipple() {
       transitionStartedAt = performance.now();
       isTransitioning = true;
       setAboutOpen(dissolveTo === 1);
+      setAboutBusy(true);
     };
 
     toggleStillnessRef.current = () => {
+      if (!isReady || motionIsTransitioning) return;
+
       motionFactorFrom = motionFactor;
       motionFactorTo = isWaterStill ? 1 : 0;
       motionTransitionStartedAt = performance.now();
       motionIsTransitioning = true;
       isWaterStill = !isWaterStill;
       setWaterStill(isWaterStill);
+      setStillnessBusy(true);
     };
 
     void import("glslCanvas")
@@ -281,6 +289,12 @@ export default function WaterRipple() {
   return (
     <div className="water-stage">
       <canvas ref={canvasRef} className="water-ripple" aria-label="Animated water scene" />
+      <div
+        className={aboutOpen ? "about-panel is-visible" : "about-panel"}
+        aria-hidden={!aboutOpen}
+      >
+        <p>about me</p>
+      </div>
       <div className="painting-text-slot">
         <p className="painting-text-group">
           <span>dale dai</span>
@@ -299,14 +313,16 @@ export default function WaterRipple() {
             className="about-toggle"
             type="button"
             aria-pressed={aboutOpen}
+            disabled={aboutBusy}
             onClick={() => togglePaintingRef.current()}
           >
-            {aboutOpen ? "[*] about me" : "[ ] about me"}
+            {aboutOpen ? "[*] about" : "[ ] about"}
           </button>
           <button
             className="about-toggle"
             type="button"
             aria-pressed={waterStill}
+            disabled={stillnessBusy}
             onClick={() => toggleStillnessRef.current()}
           >
             {waterStill ? "[*] hold still" : "[ ] hold still"}
