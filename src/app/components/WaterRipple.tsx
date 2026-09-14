@@ -194,7 +194,7 @@ export default function WaterRipple() {
       if (disposed || !glsl) return;
 
       if (isTransitioning) {
-        const linearProgress = Math.min((now - transitionStartedAt) / 2000, 1);
+        const linearProgress = Math.min((now - transitionStartedAt) / 2800, 1);
         const easedProgress = 1 - (1 - linearProgress) ** 3;
         dissolveProgress = dissolveFrom + (dissolveTo - dissolveFrom) * easedProgress;
 

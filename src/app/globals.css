@@ -58,12 +58,13 @@ body {
   opacity: 0;
   pointer-events: none;
   /* Same timing in both directions. */
-  transition: opacity 500ms ease;
+  transition: opacity 650ms ease;
 }
 
 .about-panel.is-visible {
   opacity: 1;
   pointer-events: auto;
+  transition: opacity 1000ms ease 350ms;
 }
 
 .about-fragment {
