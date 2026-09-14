@@ -44,7 +44,12 @@ body {
 
 .about-panel {
   grid-area: 1 / 1;
-  padding: clamp(1rem, 2.5vw, 2.25rem);
+  display: grid;
+  grid-template-columns: minmax(0, 34fr) minmax(0, 52fr);
+  align-content: start;
+  column-gap: 14%;
+  row-gap: 2.4em;
+  padding: 8% 3% 0;
   color: #111;
   font-family: var(--font-monaspace-xenon), monospace;
   font-size: 0.875rem;
@@ -61,12 +66,40 @@ body {
   pointer-events: auto;
 }
 
-.about-panel p {
+.about-fragment {
+  min-width: 0;
+}
+
+.about-identity {
+  grid-row: 1 / span 2;
+}
+
+.about-projects,
+.about-experience {
+  grid-column: 2;
+  justify-self: end;
+  width: min(100%, 30rem);
+  text-align: left;
+}
+
+.about-fragment p {
   margin: 0;
 }
 
-.about-panel p + p {
+.about-fragment p + p {
   margin-top: 0.9em;
+}
+
+.about-list {
+  display: grid;
+  gap: 1.2em;
+  margin: 0.9em 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.about-entry-detail {
+  margin: 0.25em 0 0 !important;
 }
 
 .painting-text-slot {

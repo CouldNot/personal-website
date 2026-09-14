@@ -31,6 +31,30 @@ const normalWater = {
   strength: 0.1,
 };
 
+const projects = [
+  {
+    name: "trackside",
+    href: "https://tracksideracing.app",
+    description: "a social motorsports app for live races",
+  },
+  {
+    name: "brawldle.io (now brawldle.gg)",
+    href: "https://brawldle.gg",
+    description: (
+      <>
+        a daily puzzle game for brawl stars :)
+        <br />
+        acquired in 2026
+      </>
+    ),
+  },
+  {
+    name: "beacon",
+    href: "https://github.com/CouldNot/beacon",
+    description: "a multi-protocol proxy client for macOS",
+  },
+] as const;
+
 const vertexShader = `
   uniform vec2 g_Texture0Resolution;
 
@@ -293,18 +317,59 @@ export default function WaterRipple() {
         className={aboutOpen ? "about-panel is-visible" : "about-panel"}
         inert={!aboutOpen}
       >
-        <p>about me</p>
-        <p>
-          cs @{" "}
-          <a
-            className="text-link"
-            href="https://www.usc.edu/"
-            target="_blank"
-            rel="noreferrer"
-          >
-            usc
-          </a>
-        </p>
+        <section className="about-fragment about-identity" aria-label="About Dale">
+          <p>[about me]</p>
+          <p>
+            I&apos;m Dale, a computer science student @{" "}
+            <a
+              className="text-link"
+              href="https://www.usc.edu/"
+              target="_blank"
+              rel="noreferrer"
+            >
+              USC
+            </a>
+            {" "}currently working on consumer agents.
+          </p>
+          <p>
+            In my free time, I like to play piano and listen to music.
+          </p>
+        </section>
+        <section className="about-fragment about-projects" aria-labelledby="projects-title">
+          <p id="projects-title">[selected projects]</p>
+          <ul className="about-list project-list">
+            {projects.map((project) => (
+              <li key={project.name}>
+                <a
+                  className="text-link"
+                  href={project.href}
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  {project.name}
+                </a>
+                <p className="about-entry-detail">{project.description}</p>
+              </li>
+            ))}
+          </ul>
+        </section>
+        <section className="about-fragment about-experience" aria-labelledby="experience-title">
+          <p id="experience-title">[experience]</p>
+          <ul className="about-list">
+            <li>
+              <p>trackside</p>
+              <p className="about-entry-detail">co-founder / 2026—now</p>
+            </li>
+            <li>
+              <p>open source</p>
+              <p className="about-entry-detail">contributor / 2022—26</p>
+            </li>
+            <li>
+              <p>millennium stem bc</p>
+              <p className="about-entry-detail">director of it / 2024—25</p>
+            </li>
+          </ul>
+        </section>
       </div>
       <div className="painting-text-slot">
         <p className="painting-text-group">
@@ -325,7 +390,7 @@ export default function WaterRipple() {
             disabled={stillnessBusy}
             onClick={() => toggleStillnessRef.current()}
           >
-            {waterStill ? "[ ] go with the flow" : "[*] go with the flow"}
+            {waterStill ? "[ ] flow" : "[*] flow"}
           </button>
         </p>
         <p className="painting-text-group painting-text-right">
@@ -344,9 +409,6 @@ export default function WaterRipple() {
             rel="noreferrer"
           >
             github
-          </a>
-          <a className="text-link" href="#cv" title="CV coming soon">
-            cv
           </a>
           <span>hi@daled.ai</span>
         </p>
