@@ -46,7 +46,7 @@ export default async function Image() {
       >
         <div style={{ fontSize: 52, lineHeight: 1.1 }}>Dale Dai</div>
         <div style={{ fontSize: 22, lineHeight: 1.4, marginTop: 28 }}>
-          Building software for many different reasons.
+          Making software in many different places.
         </div>
         <div style={{ fontSize: 18, marginTop: 48 }}>daled.ai</div>
       </div>

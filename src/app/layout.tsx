@@ -10,7 +10,7 @@ const monaspaceXenon = localFont({
 });
 
 const description =
-  "Dale Dai is a computer science student at USC, building software for many different reasons.";
+  "Dale Dai is a computer science student at USC, making software in many different places.";
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://daled.ai"),
