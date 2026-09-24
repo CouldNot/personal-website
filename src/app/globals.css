@@ -83,6 +83,22 @@ body {
   text-align: left;
 }
 
+.time-machine {
+  position: relative;
+}
+
+/* Opens downward into the space below the painting. */
+.time-machine-list {
+  position: absolute;
+  top: calc(100% + 0.9em);
+  left: 0;
+  display: grid;
+  gap: 0.6em;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
 .about-fragment p {
   margin: 0;
 }

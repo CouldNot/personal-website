@@ -55,6 +55,12 @@ const projects = [
   },
 ] as const;
 
+// Previous iterations of the site, oldest first.
+const versions = [
+  // Placeholder until v1 is hosted.
+  { name: "v1", href: "https://v1.daled.ai" },
+] as const;
+
 const vertexShader = `
   uniform vec2 g_Texture0Resolution;
 
@@ -166,7 +172,10 @@ export default function WaterRipple() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const togglePaintingRef = useRef<() => void>(() => {});
   const toggleStillnessRef = useRef<() => void>(() => {});
+  const timeMachineRef = useRef<HTMLElement>(null);
+  const timeMachineToggleRef = useRef<HTMLButtonElement>(null);
   const [aboutOpen, setAboutOpen] = useState(false);
+  const [timeMachineOpen, setTimeMachineOpen] = useState(false);
   const [waterStill, setWaterStill] = useState(false);
 
   useEffect(() => {
@@ -314,6 +323,28 @@ export default function WaterRipple() {
     };
   }, []);
 
+  useEffect(() => {
+    if (!timeMachineOpen) return;
+
+    const closeOnOutsidePointer = (event: PointerEvent) => {
+      if (!timeMachineRef.current?.contains(event.target as Node)) {
+        setTimeMachineOpen(false);
+      }
+    };
+    const closeOnEscape = (event: KeyboardEvent) => {
+      if (event.key !== "Escape") return;
+      setTimeMachineOpen(false);
+      timeMachineToggleRef.current?.focus();
+    };
+
+    document.addEventListener("pointerdown", closeOnOutsidePointer);
+    document.addEventListener("keydown", closeOnEscape);
+    return () => {
+      document.removeEventListener("pointerdown", closeOnOutsidePointer);
+      document.removeEventListener("keydown", closeOnEscape);
+    };
+  }, [timeMachineOpen]);
+
   return (
     <div className="water-stage">
       <canvas ref={canvasRef} className="water-ripple" aria-label="Animated water scene" />
@@ -376,8 +407,36 @@ export default function WaterRipple() {
         </section>
       </div>
       <div className="painting-text-slot">
-        <p className="painting-text-group">
-          <span>dale dai</span>
+        <div className="painting-text-group">
+          {/* The name secretly doubles as the time machine. */}
+          <nav ref={timeMachineRef} className="time-machine" aria-label="Previous versions">
+            <button
+              ref={timeMachineToggleRef}
+              className="about-toggle"
+              type="button"
+              aria-expanded={timeMachineOpen}
+              aria-controls="time-machine-list"
+              onClick={() => setTimeMachineOpen((open) => !open)}
+            >
+              dale dai
+            </button>
+            {timeMachineOpen && (
+              <ul id="time-machine-list" className="time-machine-list">
+                {versions.map((version) => (
+                  <li key={version.name}>
+                    <a
+                      className="text-link"
+                      href={version.href}
+                      target="_blank"
+                      rel="noreferrer"
+                    >
+                      {version.name}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </nav>
           <button
             className="about-toggle"
             type="button"
@@ -394,8 +453,8 @@ export default function WaterRipple() {
           >
             {waterStill ? "[ ] flow" : "[*] flow"}
           </button>
-        </p>
-        <p className="painting-text-group painting-text-right">
+        </div>
+        <div className="painting-text-group painting-text-right">
           <a
             className="text-link"
             href="https://linkedin.com/in/dale-dai"
@@ -413,7 +472,7 @@ export default function WaterRipple() {
             github
           </a>
           <span>hi@daled.ai</span>
-        </p>
+        </div>
       </div>
     </div>
   );
