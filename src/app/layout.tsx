@@ -9,9 +9,33 @@ const monaspaceXenon = localFont({
   weight: "400",
 });
 
+const description =
+  "Dale Dai is a computer science student at USC, building software for many different reasons.";
+
 export const metadata: Metadata = {
+  metadataBase: new URL("https://daled.ai"),
   title: "Dale Dai",
-  description: "An animated water scene.",
+  description,
+  alternates: { canonical: "/" },
+  openGraph: {
+    title: "Dale Dai",
+    description,
+    url: "/",
+    siteName: "Dale Dai",
+    locale: "en_US",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Dale Dai",
+    description,
+    images: [
+      {
+        url: "/opengraph-image",
+        alt: "Dale Dai's personal website with a harbor painting",
+      },
+    ],
+  },
 };
 
 export default function RootLayout({

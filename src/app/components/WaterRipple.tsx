@@ -177,10 +177,28 @@ export default function WaterRipple() {
   const [aboutOpen, setAboutOpen] = useState(false);
   const [timeMachineOpen, setTimeMachineOpen] = useState(false);
   const [waterStill, setWaterStill] = useState(false);
+  const [canvasReady, setCanvasReady] = useState(false);
 
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
+
+    const mobileLayout = window.matchMedia("(max-width: 1100px), (max-height: 560px)");
+    let isMobile = mobileLayout.matches;
+    const updateMobileLayout = (event: MediaQueryListEvent) => {
+      isMobile = event.matches;
+    };
+    mobileLayout.addEventListener("change", updateMobileLayout);
+    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+    let prefersReducedMotion = reducedMotion.matches;
+    const updateReducedMotion = (event: MediaQueryListEvent) => {
+      prefersReducedMotion = event.matches;
+      motionIsTransitioning = false;
+      motionFactor = prefersReducedMotion || isWaterStill ? 0 : 1;
+      isTransitioning = false;
+      dissolveProgress = dissolveTo;
+    };
+    reducedMotion.addEventListener("change", updateReducedMotion);
 
     let disposed = false;
     let glsl: GlslCanvasInstance | undefined;
@@ -189,7 +207,7 @@ export default function WaterRipple() {
     let isReady = false;
     let isTransitioning = false;
     let isWaterStill = false;
-    let motionFactor = 1;
+    let motionFactor = prefersReducedMotion ? 0 : 1;
     let motionFactorFrom = 1;
     let motionFactorTo = 1;
     let motionTransitionStartedAt = 0;
@@ -207,7 +225,7 @@ export default function WaterRipple() {
     const render = (now: number) => {
       if (disposed || !glsl) return;
 
-      if (isTransitioning) {
+      if (isTransitioning && !prefersReducedMotion) {
         const linearProgress = Math.min((now - transitionStartedAt) / transitionDuration, 1);
         const easedProgress = 1 - (1 - linearProgress) ** 3;
         dissolveProgress = dissolveFrom + (dissolveTo - dissolveFrom) * easedProgress;
@@ -218,7 +236,7 @@ export default function WaterRipple() {
         }
       }
 
-      if (motionIsTransitioning) {
+      if (motionIsTransitioning && !prefersReducedMotion) {
         const linearProgress = Math.min((now - motionTransitionStartedAt) / motionTransitionDuration, 1);
         const easedProgress = linearProgress * linearProgress * (3 - 2 * linearProgress);
         motionFactor = motionFactorFrom + (motionFactorTo - motionFactorFrom) * easedProgress;
@@ -240,7 +258,7 @@ export default function WaterRipple() {
 
       glsl.setUniform("g_Time", scrollPhase);
       glsl.setUniform("g_RipplePhase", ripplePhase);
-      glsl.setUniform("u_progress", dissolveProgress);
+      glsl.setUniform("u_progress", isMobile ? 0 : dissolveProgress);
       glsl.setUniform("g_Strength", normalWater.strength * motionFactor);
       renderFrame = requestAnimationFrame(render);
     };
@@ -262,16 +280,23 @@ export default function WaterRipple() {
       glsl.resize();
       isReady = true;
       canvas.classList.add("is-ready");
+      setCanvasReady(true);
       renderFrame = requestAnimationFrame(render);
     };
 
     // Toggles are never locked: a click mid-transition reverses from the
     // current value, and the duration scales with the distance left to cover.
     togglePaintingRef.current = () => {
-      if (!isReady) return;
+      if (isMobile) return;
 
       dissolveFrom = dissolveProgress;
       dissolveTo = dissolveTo === 1 ? 0 : 1;
+      if (prefersReducedMotion || !isReady) {
+        dissolveProgress = dissolveTo;
+        isTransitioning = false;
+        setAboutOpen(dissolveTo === 1);
+        return;
+      }
       transitionDuration = Math.max(2800 * Math.abs(dissolveTo - dissolveFrom), 1);
       transitionStartedAt = performance.now();
       isTransitioning = true;
@@ -279,7 +304,7 @@ export default function WaterRipple() {
     };
 
     toggleStillnessRef.current = () => {
-      if (!isReady) return;
+      if (!isReady || prefersReducedMotion) return;
 
       motionFactorFrom = motionFactor;
       motionFactorTo = isWaterStill ? 1 : 0;
@@ -315,6 +340,8 @@ export default function WaterRipple() {
 
     return () => {
       disposed = true;
+      mobileLayout.removeEventListener("change", updateMobileLayout);
+      reducedMotion.removeEventListener("change", updateReducedMotion);
       togglePaintingRef.current = () => {};
       toggleStillnessRef.current = () => {};
       if (renderFrame !== undefined) cancelAnimationFrame(renderFrame);
@@ -346,14 +373,18 @@ export default function WaterRipple() {
   }, [timeMachineOpen]);
 
   return (
-    <div className="water-stage">
-      <canvas ref={canvasRef} className="water-ripple" aria-label="Animated water scene" />
+    <main className={`water-stage${aboutOpen && !canvasReady ? " is-fallback-about" : ""}`}>
       <div
-        className={aboutOpen ? "about-panel is-visible" : "about-panel"}
-        inert={!aboutOpen}
+        className="artwork-frame"
+        role="img"
+        aria-label="Harbor painting by Hiroshi Yoshida with animated water"
+        aria-hidden={aboutOpen}
       >
-        <section className="about-fragment about-identity" aria-label="About Dale">
-          <p>[about me]</p>
+        <canvas ref={canvasRef} className="water-ripple" aria-hidden="true" />
+      </div>
+      <div className={aboutOpen ? "about-panel is-visible" : "about-panel"}>
+        <section className="about-fragment about-identity" aria-labelledby="about-title">
+          <h2 id="about-title">[about me]</h2>
           <p>
             I&apos;m Dale, a computer science student @{" "}
             <a
@@ -364,14 +395,14 @@ export default function WaterRipple() {
             >
               USC
             </a>
-            {" "}currently exploring consumer agents (and more...)
+            , currently exploring consumer agents (and more...)
           </p>
           <p>
             In my free time, I like to play piano and listen to music.
           </p>
         </section>
         <section className="about-fragment about-projects" aria-labelledby="projects-title">
-          <p id="projects-title">[selected projects]</p>
+          <h2 id="projects-title">[selected projects]</h2>
           <ul className="about-list project-list">
             {projects.map((project) => (
               <li key={project.name}>
@@ -389,7 +420,7 @@ export default function WaterRipple() {
           </ul>
         </section>
         <section className="about-fragment about-experience" aria-labelledby="experience-title">
-          <p id="experience-title">[experience]</p>
+          <h2 id="experience-title">[experience]</h2>
           <ul className="about-list">
             <li>
               <p>troylabs</p>
@@ -410,32 +441,32 @@ export default function WaterRipple() {
         <div className="painting-text-group">
           {/* The name secretly doubles as the time machine. */}
           <nav ref={timeMachineRef} className="time-machine" aria-label="Previous versions">
-            <button
-              ref={timeMachineToggleRef}
-              className="about-toggle"
-              type="button"
-              aria-expanded={timeMachineOpen}
-              aria-controls="time-machine-list"
-              onClick={() => setTimeMachineOpen((open) => !open)}
-            >
-              dale dai
-            </button>
-            {timeMachineOpen && (
-              <ul id="time-machine-list" className="time-machine-list">
-                {versions.map((version) => (
-                  <li key={version.name}>
-                    <a
-                      className="text-link"
-                      href={version.href}
-                      target="_blank"
-                      rel="noreferrer"
-                    >
-                      {version.name}
-                    </a>
-                  </li>
-                ))}
-              </ul>
-            )}
+            <h1 className="site-title">
+              <button
+                ref={timeMachineToggleRef}
+                className="about-toggle"
+                type="button"
+                aria-expanded={timeMachineOpen}
+                aria-controls="time-machine-list"
+                onClick={() => setTimeMachineOpen((open) => !open)}
+              >
+                Dale Dai
+              </button>
+            </h1>
+            <ul id="time-machine-list" className="time-machine-list" hidden={!timeMachineOpen}>
+              {versions.map((version) => (
+                <li key={version.name}>
+                  <a
+                    className="text-link"
+                    href={version.href}
+                    target="_blank"
+                    rel="noreferrer"
+                  >
+                    {version.name}
+                  </a>
+                </li>
+              ))}
+            </ul>
           </nav>
           <button
             className="about-toggle"
@@ -446,7 +477,7 @@ export default function WaterRipple() {
             {aboutOpen ? "[*] about" : "[ ] about"}
           </button>
           <button
-            className="about-toggle"
+            className="about-toggle flow-toggle"
             type="button"
             aria-pressed={!waterStill}
             onClick={() => toggleStillnessRef.current()}
@@ -471,9 +502,11 @@ export default function WaterRipple() {
           >
             github
           </a>
-          <span>hi@daled.ai</span>
+          <a className="text-link" href="mailto:hi@daled.ai">
+            hi@daled.ai
+          </a>
         </div>
       </div>
-    </div>
+    </main>
   );
 }

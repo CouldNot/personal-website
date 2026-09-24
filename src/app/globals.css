@@ -23,16 +23,31 @@ body {
 
 .water-stage {
   position: relative;
-  display: grid;
+  display: block;
   justify-self: center;
-  width: 64vw;
+  width: min(64vw, 118dvh);
   aspect-ratio: 3000 / 2044;
   background: url("/media/yoshida_hiroshi-paper-q98.webp") center / contain no-repeat;
   transform: translateY(-7vh);
 }
 
+.water-stage.is-fallback-about {
+  background-image: none;
+}
+
+.water-stage.is-fallback-about .artwork-frame {
+  visibility: hidden;
+}
+
+.artwork-frame {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
 .water-ripple {
-  grid-area: 1 / 1;
+  display: block;
   width: 100%;
   height: 100%;
   visibility: hidden;
@@ -43,7 +58,9 @@ body {
 }
 
 .about-panel {
-  grid-area: 1 / 1;
+  position: absolute;
+  inset: 0;
+  z-index: 1;
   display: grid;
   grid-template-columns: minmax(0, 34fr) minmax(0, 52fr);
   align-content: start;
@@ -56,15 +73,17 @@ body {
   line-height: 1.3;
   text-align: left;
   opacity: 0;
+  visibility: hidden;
   pointer-events: none;
   /* Same timing in both directions. */
-  transition: opacity 650ms ease;
+  transition: opacity 650ms ease, visibility 0s linear 650ms;
 }
 
 .about-panel.is-visible {
   opacity: 1;
+  visibility: visible;
   pointer-events: auto;
-  transition: opacity 1000ms ease 350ms;
+  transition: opacity 1000ms ease 350ms, visibility 0s;
 }
 
 .about-fragment {
@@ -87,6 +106,16 @@ body {
   position: relative;
 }
 
+.site-title,
+.about-fragment h2 {
+  margin: 0;
+  font: inherit;
+}
+
+.site-title .about-toggle {
+  text-transform: lowercase;
+}
+
 /* Opens downward into the space below the painting. */
 .time-machine-list {
   position: absolute;
@@ -99,10 +128,15 @@ body {
   list-style: none;
 }
 
+.time-machine-list[hidden] {
+  display: none;
+}
+
 .about-fragment p {
   margin: 0;
 }
 
+.about-fragment h2 + p,
 .about-fragment p + p {
   margin-top: 0.9em;
 }
@@ -170,4 +204,137 @@ body {
 .text-link:focus-visible {
   outline: 1px solid currentColor;
   outline-offset: 0.22em;
+}
+
+@media (max-width: 1100px), (max-height: 560px) {
+  html,
+  body {
+    overflow-x: hidden;
+    overflow-y: auto;
+  }
+
+  body {
+    display: block;
+    height: auto;
+    min-height: 100dvh;
+  }
+
+  .water-stage {
+    display: flex;
+    flex-direction: column;
+    width: min(100% - 2rem, 36rem);
+    aspect-ratio: auto;
+    margin: 1rem auto 0;
+    padding-bottom: 3rem;
+    background: none;
+    transform: none;
+  }
+
+  .artwork-frame {
+    position: relative;
+    inset: auto;
+    flex: none;
+    width: 100%;
+    height: auto;
+    aspect-ratio: 3000 / 2044;
+    background: url("/media/yoshida_hiroshi-paper-q98.webp") center / contain no-repeat;
+  }
+
+  .water-ripple {
+    position: absolute;
+    inset: 0;
+  }
+
+  .painting-text-slot {
+    position: static;
+    order: 1;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0;
+    width: 100%;
+    min-height: 0;
+    margin-top: 0.5rem;
+    font-size: 1rem;
+    white-space: normal;
+    transform: none;
+  }
+
+  .painting-text-group {
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0 1.25rem;
+  }
+
+  .painting-text-group > .about-toggle {
+    display: none;
+  }
+
+  .painting-text-right {
+    justify-content: flex-start;
+  }
+
+  .site-title .about-toggle,
+  .painting-text-right > .text-link,
+  .time-machine-list .text-link {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+  }
+
+  .time-machine-list {
+    position: static;
+    gap: 0;
+    margin-top: 0.25rem;
+  }
+
+  .about-panel,
+  .about-panel.is-visible {
+    position: relative;
+    inset: auto;
+    order: 2;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 2rem;
+    width: 100%;
+    margin-top: 1.5rem;
+    padding: 0;
+    font-size: 1rem;
+    line-height: 1.5;
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+    transition: none;
+  }
+
+  .about-identity,
+  .about-projects,
+  .about-experience {
+    grid-column: 1;
+    grid-row: auto;
+    justify-self: stretch;
+    width: 100%;
+  }
+
+  .about-list {
+    gap: 1.25rem;
+  }
+
+  .project-list .text-link {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    max-width: 100%;
+    overflow-wrap: anywhere;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .flow-toggle {
+    display: none;
+  }
+
+  .about-panel,
+  .about-panel.is-visible {
+    transition: none;
+  }
 }
