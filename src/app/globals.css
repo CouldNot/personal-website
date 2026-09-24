@@ -328,6 +328,36 @@ body {
   }
 }
 
+@media (max-width: 600px) and (orientation: portrait) {
+  .water-stage {
+    width: 100%;
+    margin-top: 0;
+    padding: 0 1rem 3rem;
+  }
+
+  .artwork-frame {
+    width: calc(100% + 1.5rem);
+    height: 90vw;
+    aspect-ratio: auto;
+    margin-left: -0.75rem;
+    overflow: hidden;
+    background-position: left bottom;
+    background-size: 150% auto;
+  }
+
+  .water-ripple {
+    top: auto;
+    right: auto;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: auto;
+    aspect-ratio: 3000 / 2044;
+    transform: scale(1.5);
+    transform-origin: left bottom;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .flow-toggle {
     display: none;
