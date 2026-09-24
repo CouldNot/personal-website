@@ -149,8 +149,14 @@ const fragmentShader = `
     textureCoordinate += normal.xy * g_Strength * g_Strength * mask;
 
     vec4 color = texture2D(g_Texture0, textureCoordinate);
-    float grain = fbm(v_texcoord * vec2(8.0, 6.0));
-    float dissolved = smoothstep(0.0, 0.13, u_progress * 1.2 - grain + 0.02);
+    // fbm rarely leaves 0.12..0.78, so normalize to that range. The front then
+    // sweeps from before the lowest grain to past the highest, and u_progress
+    // 0 and 1 are exactly untouched and fully dissolved.
+    const float GRAIN_MIN = 0.12;
+    const float GRAIN_MAX = 0.78;
+    const float EDGE = 0.2;
+    float grain = clamp((fbm(v_texcoord * vec2(8.0, 6.0)) - GRAIN_MIN) / (GRAIN_MAX - GRAIN_MIN), 0.0, 1.0);
+    float dissolved = smoothstep(0.0, EDGE, u_progress * (1.0 + EDGE) - grain);
     vec3 pageColor = vec3(0.9529411765, 0.9450980392, 0.9098039216);
     gl_FragColor = vec4(mix(color.rgb, pageColor, dissolved), 1.0);
   }
@@ -161,9 +167,7 @@ export default function WaterRipple() {
   const togglePaintingRef = useRef<() => void>(() => {});
   const toggleStillnessRef = useRef<() => void>(() => {});
   const [aboutOpen, setAboutOpen] = useState(false);
-  const [aboutBusy, setAboutBusy] = useState(false);
   const [waterStill, setWaterStill] = useState(false);
-  const [stillnessBusy, setStillnessBusy] = useState(false);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -175,12 +179,12 @@ export default function WaterRipple() {
     let readinessFrame: number | undefined;
     let isReady = false;
     let isTransitioning = false;
-    let isDissolved = false;
     let isWaterStill = false;
     let motionFactor = 1;
     let motionFactorFrom = 1;
     let motionFactorTo = 1;
     let motionTransitionStartedAt = 0;
+    let motionTransitionDuration = 0;
     let motionIsTransitioning = false;
     let ripplePhase = 0;
     let scrollPhase = 0;
@@ -188,33 +192,31 @@ export default function WaterRipple() {
     let dissolveFrom = 0;
     let dissolveTo = 0;
     let transitionStartedAt = 0;
+    let transitionDuration = 0;
     let previousTimestamp: number | undefined;
 
     const render = (now: number) => {
       if (disposed || !glsl) return;
 
       if (isTransitioning) {
-        const linearProgress = Math.min((now - transitionStartedAt) / 2800, 1);
+        const linearProgress = Math.min((now - transitionStartedAt) / transitionDuration, 1);
         const easedProgress = 1 - (1 - linearProgress) ** 3;
         dissolveProgress = dissolveFrom + (dissolveTo - dissolveFrom) * easedProgress;
 
         if (linearProgress === 1) {
           dissolveProgress = dissolveTo;
-          isDissolved = dissolveTo === 1;
           isTransitioning = false;
-          setAboutBusy(false);
         }
       }
 
       if (motionIsTransitioning) {
-        const linearProgress = Math.min((now - motionTransitionStartedAt) / 1600, 1);
+        const linearProgress = Math.min((now - motionTransitionStartedAt) / motionTransitionDuration, 1);
         const easedProgress = linearProgress * linearProgress * (3 - 2 * linearProgress);
         motionFactor = motionFactorFrom + (motionFactorTo - motionFactorFrom) * easedProgress;
 
         if (linearProgress === 1) {
           motionFactor = motionFactorTo;
           motionIsTransitioning = false;
-          setStillnessBusy(false);
         }
       }
 
@@ -254,27 +256,29 @@ export default function WaterRipple() {
       renderFrame = requestAnimationFrame(render);
     };
 
+    // Toggles are never locked: a click mid-transition reverses from the
+    // current value, and the duration scales with the distance left to cover.
     togglePaintingRef.current = () => {
-      if (!isReady || isTransitioning) return;
+      if (!isReady) return;
 
       dissolveFrom = dissolveProgress;
-      dissolveTo = isDissolved ? 0 : 1;
+      dissolveTo = dissolveTo === 1 ? 0 : 1;
+      transitionDuration = Math.max(2800 * Math.abs(dissolveTo - dissolveFrom), 1);
       transitionStartedAt = performance.now();
       isTransitioning = true;
       setAboutOpen(dissolveTo === 1);
-      setAboutBusy(true);
     };
 
     toggleStillnessRef.current = () => {
-      if (!isReady || motionIsTransitioning) return;
+      if (!isReady) return;
 
       motionFactorFrom = motionFactor;
       motionFactorTo = isWaterStill ? 1 : 0;
+      motionTransitionDuration = Math.max(1600 * Math.abs(motionFactorTo - motionFactorFrom), 1);
       motionTransitionStartedAt = performance.now();
       motionIsTransitioning = true;
       isWaterStill = !isWaterStill;
       setWaterStill(isWaterStill);
-      setStillnessBusy(true);
     };
 
     void import("glslCanvas")
@@ -329,7 +333,7 @@ export default function WaterRipple() {
             >
               USC
             </a>
-            {" "}currently working on consumer agents.
+            {" "}currently exploring consumer agents (and more...)
           </p>
           <p>
             In my free time, I like to play piano and listen to music.
@@ -357,16 +361,16 @@ export default function WaterRipple() {
           <p id="experience-title">[experience]</p>
           <ul className="about-list">
             <li>
+              <p>troylabs</p>
+              <p className="about-entry-detail">software engineer / 2026-now</p>
+            </li>
+            <li>
               <p>trackside</p>
               <p className="about-entry-detail">co-founder / 2026—now</p>
             </li>
             <li>
               <p>open source</p>
               <p className="about-entry-detail">contributor / 2022—26</p>
-            </li>
-            <li>
-              <p>millennium stem bc</p>
-              <p className="about-entry-detail">director of it / 2024—25</p>
             </li>
           </ul>
         </section>
@@ -378,7 +382,6 @@ export default function WaterRipple() {
             className="about-toggle"
             type="button"
             aria-pressed={aboutOpen}
-            disabled={aboutBusy}
             onClick={() => togglePaintingRef.current()}
           >
             {aboutOpen ? "[*] about" : "[ ] about"}
@@ -387,7 +390,6 @@ export default function WaterRipple() {
             className="about-toggle"
             type="button"
             aria-pressed={!waterStill}
-            disabled={stillnessBusy}
             onClick={() => toggleStillnessRef.current()}
           >
             {waterStill ? "[ ] flow" : "[*] flow"}

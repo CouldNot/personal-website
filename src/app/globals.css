@@ -145,10 +145,6 @@ body {
   cursor: pointer;
 }
 
-.about-toggle:disabled {
-  cursor: default;
-}
-
 .text-link {
   color: inherit;
   text-underline-offset: 0.16em;
