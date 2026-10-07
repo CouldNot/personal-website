@@ -32,7 +32,7 @@ export const metadata: Metadata = {
     images: [
       {
         url: "/opengraph-image",
-        alt: "Dale Dai's personal website with a harbor painting",
+        alt: "Harbor painting by Yoshida Hiroshi",
       },
     ],
   },
